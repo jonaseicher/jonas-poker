@@ -11,9 +11,15 @@ server.listen(61614);
 stompServer.subscribe("/**", function(msg, headers) {
   var topic = headers.destination;
   console.log(topic, "->", msg);
+  stompServer.send("/**", {}, "test");
 });
 
-stompServer.send('/test', {}, 'testMsg');
+// stompServer.send('/test', {}, 'testMsg');
+
+stompServer.onSubscribe = () => console.log('onSubscribe');
+
+stompServer.onClientConnected = () => console.log('onClientConnected');
+
 
 deal();
 

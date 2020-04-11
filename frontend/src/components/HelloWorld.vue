@@ -18,10 +18,10 @@
         <button @click="disconnect">Disconnect</button>
         <button @click="subscribe">Subscribe</button>
         <button @click="send('/app/karten', 'sending to /app/karten')">Send to /app/karten</button>
-        <button @click="send('/user/karten', 'sending to user/karten')">Send to /user/karten</button>
+        <!-- <button @click="send('/user/karten', 'sending to user/karten')">Send to /user/karten</button>
         <button @click="send('/topic/greetings', 'sending to /topic/greetings')">Send to /topic/greetings</button>
-        <button @click="send('/app/hello', 'sending to /app/hello')">Send to /app/hello</button>
-        <button @click="send('/app/humba', 'sending to /app/humba')">Send to /app/humba</button>
+        <button @click="send('/app/hello', 'sending to /app/hello')">Send to /app/hello</button> -->
+        <button @click="send('/app/join/table', 'SomeTable')">Join Poker Table</button>
       </li>
     </ul>
   </div>
@@ -39,9 +39,14 @@ export default class HelloWorld extends Vue {
   players = [new Player('Bob'), new Player('Alice'), new Player('Steve')];
 
   stompClient = new Client({
-    brokerURL: 'ws://127.0.0.1:9090/ws',
+    brokerURL: 'ws://127.0.0.1:9090/stomp',
+    // brokerURL: 'ws://localhost:61614/stomp',
     connectHeaders: {
       sessionId: 'really',
+      login: 'mylogin',
+      passcode: 'mypasscode',
+      // additional header
+      'client-id': 'my-client-id',
     },
     debug(str) {
       console.log(str);
@@ -61,16 +66,25 @@ export default class HelloWorld extends Vue {
 
 
   subscribe() {
-    // this.stompClient.subscribe('/topic/greetings', (message) => console.log(message));
-    // this.stompClient.subscribe('/user/queue/humba', (message) => console.log(message));
+    // trying the node broker
+    // this.stompClient.subscribe('/*', (x) => console.log(x));
+    // this.stompClient.subscribe('/test', (x) => console.log(x));
+
+    // this works with the spring boot broker
+    this.stompClient.subscribe('/join/table', (message) => console.log(message));
+    this.stompClient.subscribe('/user/queue/error', (message) => console.log(message));
     this.stompClient.subscribe('/user/queue/karten', (message) => {
       console.log('SOMETHING');
       console.log(message);
     });
+
+
+    // old testing stuff
+    // this.stompClient.subscribe('/topic/greetings', (message) => console.log(message));
+    // this.stompClient.subscribe('/user/queue/humba', (message) => console.log(message));
     // this.stompClient.subscribe('/user/jonas/humba', (message) => console.log(message));
     // this.stompClient.subscribe('/user/queue/karten', (message) => console.log(message));
     // this.stompClient.subscribe('/user/jonas/karten', (message) => console.log(message));
-    this.stompClient.subscribe('/user/queue/error', (message) => console.log(message));
   }
 
   send(destination: string, body: string) {

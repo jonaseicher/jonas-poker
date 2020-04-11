@@ -31,7 +31,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 		// registry.addEndpoint("/gs-guide-websocket").withSockJS();
 		// registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:8180").withSockJS();
 		// registry.addEndpoint("/ws1").setAllowedOrigins("http://localhost:8180");
-		registry.addEndpoint("/ws").setAllowedOrigins("*").setHandshakeHandler(new SessionIdHandshakeHandler());
+		registry.addEndpoint("/stomp").setAllowedOrigins("*").setHandshakeHandler(new SessionIdHandshakeHandler());
 	}
 
 }
@@ -57,7 +57,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 class SessionIdHandshakeHandler extends DefaultHandshakeHandler {
 
 	public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
-			Map attributes) throws Exception {
+			Map<String, Object> attributes) throws Exception {
 
 		if (request instanceof ServletServerHttpRequest) {
 			ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
