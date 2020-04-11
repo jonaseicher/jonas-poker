@@ -1,0 +1,14 @@
+{
+  "name": "jonas-poker-backend",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "stomp-broker-js": "^1.3.0",
+    "typedeck": "^1.5.1"
+  }
+}
