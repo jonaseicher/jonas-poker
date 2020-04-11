@@ -17,8 +17,11 @@
         <button @click="connect">Connect</button>
         <button @click="disconnect">Disconnect</button>
         <button @click="subscribe">Subscribe</button>
-        <button @click="send('/app/cards', 'sending send')">Send to Cards</button>
-        <button @click="send('/topic/greetings', 'sending send')">Send to Greetings</button>
+        <button @click="send('/app/karten', 'sending to /app/karten')">Send to /app/karten</button>
+        <button @click="send('/user/karten', 'sending to user/karten')">Send to /user/karten</button>
+        <button @click="send('/topic/greetings', 'sending to /topic/greetings')">Send to /topic/greetings</button>
+        <button @click="send('/app/hello', 'sending to /app/hello')">Send to /app/hello</button>
+        <button @click="send('/app/humba', 'sending to /app/humba')">Send to /app/humba</button>
       </li>
     </ul>
   </div>
@@ -38,12 +41,7 @@ export default class HelloWorld extends Vue {
   stompClient = new Client({
     brokerURL: 'ws://127.0.0.1:9090/ws',
     connectHeaders: {
-      userName: 'userName',
-      username: 'jonas',
-      user: 'spring',
-      login: 'huhuh',
-      passcode: 'spring',
-      'client-id': 'my-client-id',
+      sessionId: 'really',
     },
     debug(str) {
       console.log(str);
@@ -63,10 +61,16 @@ export default class HelloWorld extends Vue {
 
 
   subscribe() {
-    this.stompClient.subscribe('/topic/greetings', (message) => console.log(message));
-    this.stompClient.subscribe('/user/karten', (message) => {
+    // this.stompClient.subscribe('/topic/greetings', (message) => console.log(message));
+    // this.stompClient.subscribe('/user/queue/humba', (message) => console.log(message));
+    this.stompClient.subscribe('/user/queue/karten', (message) => {
+      console.log('SOMETHING');
       console.log(message);
     });
+    // this.stompClient.subscribe('/user/jonas/humba', (message) => console.log(message));
+    // this.stompClient.subscribe('/user/queue/karten', (message) => console.log(message));
+    // this.stompClient.subscribe('/user/jonas/karten', (message) => console.log(message));
+    this.stompClient.subscribe('/user/queue/error', (message) => console.log(message));
   }
 
   send(destination: string, body: string) {
