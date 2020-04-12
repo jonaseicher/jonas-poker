@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+    jonas-poker-java-backend:
+        container_name: jonas-poker-java-backend
+        build:
+            context: .
+        image: jonas-poker-java-backend
+        ports:
+            - 8280:8280
+            - 5005:5005
+        environment:
+            - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005

@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+  jonas-poker-frontend:
+    container_name: jonas-poker-frontend
+    build:
+        context: .
+    image: jonas-poker-frontend
+    ports:
+      - 8180:80
+    environment:
+      - JONAS_POKER_BACKEND_HOST=localhost
+      - JONAS_POKER_BACKEND_PORT=8280

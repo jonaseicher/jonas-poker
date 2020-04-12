@@ -17,9 +17,11 @@
     <button @click="send('/app/hello', 'sending to /app/hello')">Send to /app/hello</button> -->
     <button @click="send('/app/join/table', 'SomeTable')">Join Poker Table</button>
     <div>Chat</div>
-    <ul>
-      <li v-for="message in messages" :key="message.text">{{ message.user }} : {{ message.text }}</li>
-    </ul>
+    <div class="chat-window">
+      <div class="message" v-for="message in messages" :key="message.text">
+        {{ message.user }} : {{ message.text }}
+      </div>
+    </div>
     <input type="text" v-model="chatInputMessage" @keyup.enter="chat">
   </div>
 </template>
@@ -33,15 +35,16 @@ import { Client } from '@stomp/stompjs';
 export default class HelloWorld extends Vue {
   players = null;
 
-  messages = [];
+  messages: any[] = [];
 
   chatInputMessage = '';
 
   player = { name: `Player-${Math.floor(Math.random() * 1000)}`, id: Math.floor(Math.random() * 100000000) };
 
   stompClient = new Client({
-    brokerURL: 'ws://127.0.0.1:9090/stomp',
-    // brokerURL: 'ws://localhost:61614/stomp',
+    // brokerURL: 'ws://127.0.0.1:9090/stomp', // spring-boot-backend (local)
+    brokerURL: 'ws://35.158.11.245:9090/stomp', // spring-boot-backend-service (aws)
+    // brokerURL: 'ws://localhost:61614/stomp', // node-backend
     connectHeaders: {
       sessionId: 'really',
     },
@@ -64,6 +67,7 @@ export default class HelloWorld extends Vue {
 
   chat() {
     this.send('/chat', { user: this.player.name, text: this.chatInputMessage });
+    this.chatInputMessage = '';
   }
 
   send(destination: string, body: any) {
@@ -117,6 +121,18 @@ export default class HelloWorld extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.chat-window {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: lightblue;
+  box-shadow: 1px 1px 6px 0px;
+}
+
+.message {
+  text-align: left;
+}
+
 h3 {
   margin: 40px 0 0;
 }

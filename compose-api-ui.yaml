@@ -1,0 +1,78 @@
+version: '3.7'
+services:
+
+  marquez-ui:
+    container_name: marquez-ui
+    build:
+      context: marquez-ui/.
+    image: dockerregistry.sg.de.pri.o2.com/marquez/ui:latest
+    ports:
+      - 8180:80
+    volumes:
+      - ./marquez-ui/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./marquez-ui/fetch_env.js:/etc/nginx/fetch_env.js:ro
+#    configs:
+#      - source: nginx_conf
+#        target: /etc/nginx/nginx.conf
+#        mode: 0440
+#      - source: fetch_env_js
+#        target: /etc/nginx/fetch_env.js
+#        mode: 0440
+    environment:
+      - MARQUEZ_API_SERVICE_HOST=marquez-api
+      - MARQUEZ_API_SERVICE_PORT=8280
+      - NGINX_SERVER_NAME=local.o2online.de
+
+  marquez-api:
+    container_name: marquez-api
+    build:
+      context: marquez-api/.
+    image: dockerregistry.sg.de.pri.o2.com/marquez/api:latest
+    ports:
+        - 8280:8280
+    environment:
+      - CRM_MOCK_SERVICE_HOST=crm-mock
+      - CRM_MOCK_SERVICE_PORT_HTTP=8080
+      - BILLING_SERVICE_SERVICE_HOST=billing-service
+      - BILLING_SERVICE_SERVICE_PORT_HTTP=8080
+      - TACO_SERVICE_SERVICE_HOST=taco-service
+      - TACO_SERVICE_SERVICE_PORT_HTTP=8080
+
+  billing-service:
+    image: dockerregistry.sg.de.pri.o2.com/postpaid/billing-service:master
+    ports:
+      - 8580:8080
+    volumes:
+      - ./marquez-ui/billing.properties:/opt/apache-tomcat-7.0.59/common/classes/de/o2/portal/web/billing.properties:ro
+    environment:
+      - CONTEXT_PATH=billing-service
+      - MEM_OPTS=-Xms256m -Xmx256m
+      - CINDY_ENVIRONMENT=LOCAL
+      - PROF_OPTS=
+
+  taco-service:
+    image: dockerregistry.sg.de.pri.o2.com/postpaid/taco-service:master
+    ports:
+      - 8480:8080
+    volumes:
+      - ./marquez-ui/taco.properties:/opt/apache-tomcat-7.0.59/common/classes/de/o2/portal/web/taco.properties:ro
+    environment:
+      - CONTEXT_PATH=taco-service
+      - MEM_OPTS=-Xms256m -Xmx256m
+      - CINDY_ENVIRONMENT=LOCAL
+      - PROF_OPTS=
+
+  crm-mock:
+    image: dockerregistry.sg.de.pri.o2.com/postpaid/crm-mock:master
+    ports:
+      - 8380:8080
+    environment:
+      - CONTEXT_PATH=crm-mock
+      - MEM_OPTS=-Xms512m -Xmx512m
+      - tapeLoader.lazyInit=true
+
+#configs:
+#  nginx_conf:
+#    file: ./marquez-ui/nginx.conf
+#  fetch_env_js:
+#    file: ./marquez-ui/fetch_env.js

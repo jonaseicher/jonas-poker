@@ -1,0 +1,30 @@
+FROM maven:3-jdk-11 as build-stage
+LABEL image=build-stage
+
+WORKDIR /usr/src/app/
+
+COPY pom.xml mvnw* ./
+COPY ./src ./src
+COPY ./.mvn ./.mvn
+
+RUN ./mvnw -B -V clean package -DskipTests
+
+# ---
+
+FROM build-stage as verify-stage
+LABEL image=verify-stage
+
+RUN ./mvnw -B -V verify
+
+# ---
+
+FROM openjdk:11 as production-stage
+
+RUN adduser --system --group spring
+USER spring:spring
+
+COPY --from=build-stage /usr/src/app/target/*.jar app.jar
+
+EXPOSE 9090
+
+ENTRYPOINT ["java","-jar","/app.jar"]
