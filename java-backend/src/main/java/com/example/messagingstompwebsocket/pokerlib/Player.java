@@ -2,16 +2,20 @@ package com.example.messagingstompwebsocket.pokerlib;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.Data;
 
 /**
  * Represents a poker player.
  *
  * @author andyehou@gmail.com (Andy Hou)
  */
+@Data
 public class Player {
-  // The UID of the player.
-  private UUID uid;
+  // The id of the player.
+  private Long id;
   // The name of the player.
   private String name;
   // The number of chips the player has. This does not include any chips that the player has
@@ -34,56 +38,30 @@ public class Player {
   // True if this player has folded.
   private boolean isFolded;
   // The next player in the direction of play (clockwise).
-  private Player next;
+  private Player nextPlayer;
   // True if this player is ready for a new hand.
   private boolean isReady;
   
   private static final String LOG_TAG = Player.class.getSimpleName();
   
-  public Player(UUID uid, String name, int chips) {
-    this.uid = uid;
+  public Player(Long id, String name, int chips) {
+    this.id = id;
     this.name = name;
     this.chips = chips;
     pocketCards = new ArrayList<Card>();
     cleanupHand();
   }
   
-  public UUID getUid() {
-    return uid;
-  }
-  
-  public String getName() {
-    return name;
-  }
-  
-  public int getChips() {
-    return chips;
-  }
-  
-  /**
-   * Sets the next player to act.
-   * @param player The next player to act.
-   */
-  public void setNextPlayer(Player player) {
-    next = player;
-  }
-  
-  /**
-   * Gets the next player to act.
-   * @return the next player to act.
-   */
-  public Player getNextPlayer() {
-    return next;
-  }
   
   /**
    * @return the next player that is not broke or null if all players are broke.
    */
+  @JsonIgnore
   public Player getNextPlayerNotBroke() {
-    Player first = this.next;
-    Player next = this.next;
+    Player first = this.nextPlayer;
+    Player next = this.nextPlayer;
     while (next.isBroke()) {
-      next = next.next;
+      next = next.nextPlayer;
       if (next == first) {
         return null;
       }
@@ -112,12 +90,6 @@ public class Player {
     pocketCards.add(deck.drawCard());
   }
   
-  /**
-   * @return the player's pocket cards.
-   */
-  public List<Card> getPocketCards() {
-    return pocketCards;
-  }
   
   /**
    * Constructs the best hand from this player's pocket cards and the board cards.
@@ -128,14 +100,6 @@ public class Player {
     cards.addAll(pocketCards);
     cards.addAll(boardCards);
     bestHand = new HandPool(cards).getBestHand();
-  }
-  
-  /**
-   * @return the player's best hand from the pocket cards and board cards passed into
-   *     constructBestHand().
-   */
-  public Hand getBestHand() {
-    return bestHand;
   }
   
   /**
@@ -154,34 +118,12 @@ public class Player {
           (chips + betDifference) + " chips.");
     }
   }
-  
-  /**
-   * @return the number of chips to bet in the current round of betting.
-   */
-  public int getBet() {
-    return bet;
-  }
-  
-  /**
-   * @return true if this player has folded.
-   */
-  public boolean isFolded() {
-    return isFolded;
-  }
-  
+    
   /**
    * Causes this player to fold the hand.
    */
   public void fold() {
     isFolded = true;
-  }
-  
-  /**
-   * @return the number of chips this player has contributed to the pot in all previous rounds
-   *     of betting.
-   */
-  public int getPotContribution() {
-    return potContribution;
   }
   
   /**
@@ -230,22 +172,4 @@ public class Player {
     return chipsAwarded - potContribution;
   }
   
-  /**
-   * Sets the player's ready status.
-   * @param isReady true if the player is ready to start a new hand.
-   */
-  public void setIsReady(boolean isReady) {
-    this.isReady = isReady;
-  }
-  
-  /**
-   * @return true if the player is ready to start a new hand.
-   */
-  public boolean isReady() {
-    return isReady;
-  }
-  
-  public String toString() {
-    return name;
-  }
 }

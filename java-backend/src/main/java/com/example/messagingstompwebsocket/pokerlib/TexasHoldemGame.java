@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import lombok.Data;
 
@@ -114,12 +113,12 @@ public class TexasHoldemGame {
   }
   
   /**
-   * @param playerUid The UID of the player to find.
+   * @param playerId The UID of the player to find.
    * @return the player with the given UID.
    */
-  public Player getPlayer(UUID playerUid) {
+  public Player getPlayer(Long playerId) {
     for (int i = 0; i < players.size(); i++) {
-      if (players.get(i).getUid().equals(playerUid)) {
+      if (players.get(i).getId().equals(playerId)) {
         return players.get(i);
       }
     }
@@ -197,7 +196,7 @@ public class TexasHoldemGame {
         
       case PLAYER_ACTION:
         // Check that the player sending the message is the current player to act.
-        if (actor != null && actor.getUid().equals(message.getPlayerUid())) {
+        if (actor != null && actor.getId().equals(message.getPlayerId())) {
           switch (message.getActionType()) {
             case NONE:
               // Should not happen. Treat as fold.
@@ -229,17 +228,17 @@ public class TexasHoldemGame {
           }
         } else {
           System.out.println(LOG_TAG + " Got PLAYER_ACTION message from an unexpected player = " +
-              message.getPlayerUid() + ", not the actor = " +
-              (actor == null ? "NONE" : actor.getUid()));
+              message.getPlayerId() + ", not the actor = " +
+              (actor == null ? "NONE" : actor.getId()));
         }
         break;
         
       case PLAYER_JOINING:
         if (isHost) {
           // Check that the player has not already joined.
-          if (getPlayer(message.getPlayerUid()) == null) {
-            Player newPlayer = new Player(message.getPlayerUid(), message.getData(), BUY_IN_CHIPS);
-            newPlayer.setIsReady(true);
+          if (getPlayer(message.getPlayerId()) == null) {
+            Player newPlayer = new Player(message.getPlayerId(), message.getData(), BUY_IN_CHIPS);
+            newPlayer.setReady(true);
             if (!isStarted()) {
               players.add(newPlayer);
               setNextPlayers();
@@ -254,14 +253,14 @@ public class TexasHoldemGame {
             }
           } else {
             System.out.println(LOG_TAG + " Got PLAYER_JOINING message from a player already in the game: " +
-                message.getPlayerUid());
+                message.getPlayerId());
           }
         }
         break;
         
       case PLAYER_LEAVING:
         if (isHost) {
-          Player player = getPlayer(message.getPlayerUid());
+          Player player = getPlayer(message.getPlayerId());
           if (player != null) {
             players.remove(player);
             setNextPlayers();
@@ -279,9 +278,9 @@ public class TexasHoldemGame {
         
       case REQUEST_NEW_HAND:
         if (!isStarted() || state == State.HAND_DONE) {
-          Player player = getPlayer(message.getPlayerUid());
+          Player player = getPlayer(message.getPlayerId());
           if (player != null) {
-            player.setIsReady(true);
+            player.setReady(true);
             if (isHost && isAllPlayersReadyToStart()) {
               dealNewHand();
             }
@@ -348,12 +347,12 @@ public class TexasHoldemGame {
     String data = deck.serialize() + ",";
     
     // Serialize the button.
-    data += button.getUid() + ",";
+    data += button.getId() + ",";
     
     // Serialize the players.
     for (int i = 0; i < players.size(); i++) {
       Player player = players.get(i);
-      data += player.getUid() + "," +
+      data += player.getId() + "," +
           player.getName() + "," +
           player.getChips();
       if (i < players.size() - 1) {
@@ -381,7 +380,7 @@ public class TexasHoldemGame {
       System.out.println(LOG_TAG + " Bad NEW_HAND message.");
     }
     for (int i = 0; i < playerCount; i++) {
-      UUID uid = UUID.fromString(playerParts[i*3]);
+      Long uid = Long.valueOf(playerParts[i*3]);
       String name = playerParts[i*3 + 1];
       int chips = Integer.parseInt(playerParts[i*3 + 2]);
       players.add(new Player(uid, name, chips));
@@ -389,7 +388,7 @@ public class TexasHoldemGame {
     setNextPlayers();
     
     // Set the button.
-    button = getPlayer(UUID.fromString(parts[1]));
+    button = getPlayer(Long.valueOf(parts[1]));
   }
   
   /**
@@ -580,7 +579,7 @@ public class TexasHoldemGame {
    */
   private void clearPlayersReadyStatus() {
     for (int i = 0; i < players.size(); i++) {
-      players.get(i).setIsReady(false);
+      players.get(i).setReady(false);
     }
   }
   
