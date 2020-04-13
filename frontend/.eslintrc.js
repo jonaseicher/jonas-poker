@@ -17,6 +17,5 @@ module.exports = {
     'class-methods-use-this': 'off',
     'no-unused-expressions': 'off',
     'max-len': 'off',
-    'class-methods-use-this': 'off',
   },
 };

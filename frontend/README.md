@@ -21,6 +21,9 @@ docker-compose build
 npm run lint
 ```
 
+### Icon Set
+https://cdn.materialdesignicons.com/5.0.45/
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
