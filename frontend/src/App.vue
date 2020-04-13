@@ -2,6 +2,7 @@
   <v-app id="jonas-poker">
     <v-navigation-drawer v-model="drawer" app clipped>
       <v-list dense>
+        <router-link to="/about" tag="v-list-item">
         <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-view-dashboard</v-icon>
@@ -10,6 +11,8 @@
             <v-list-item-title>Dashboard</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        </router-link>
+        <router-link to="/" tag="v-list-item">
         <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-chat</v-icon>
@@ -18,6 +21,8 @@
             <v-list-item-title>Chat</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        </router-link>
+        <router-link to="/about" tag="v-list-item">
         <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-cards</v-icon>
@@ -26,14 +31,18 @@
             <v-list-item-title>Poker</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link>
-          <v-list-item-action>
-            <v-icon>mdi-card-account-details</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>My Profile</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        </router-link>
+        <router-link to="/about" tag="v-list-item">
+          <v-list-item link>
+            <v-list-item-action>
+              <v-icon>mdi-card-account-details</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>My Profile</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </router-link>
+        <router-link to="/about" tag="v-list-item">
         <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-cog</v-icon>
@@ -42,6 +51,7 @@
             <v-list-item-title>Settings</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        </router-link>
       </v-list>
     </v-navigation-drawer>
 
@@ -81,7 +91,7 @@ import HelloWorld from './components/HelloWorld.vue';
   },
 })
 export default class App extends Vue {
-  drawer = true;
+  drawer = false;
 
   created() {
     this.$vuetify.theme.dark = true;
