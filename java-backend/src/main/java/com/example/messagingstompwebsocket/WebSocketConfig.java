@@ -1,6 +1,5 @@
 package com.example.messagingstompwebsocket;
 
-import java.security.Principal;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -22,7 +21,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
-		config.enableSimpleBroker("/chat");
 		config.setApplicationDestinationPrefixes("/app");
 	}
 

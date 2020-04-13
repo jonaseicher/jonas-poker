@@ -11,14 +11,14 @@
     <v-btn v-if="!connected" class="mr-2 mb-2" @click="connect">Connect</v-btn>
     <v-btn v-else class="mr-2 mb-2" @click="disconnect">Disconnect</v-btn>
     <v-btn v-if="connected && !subscribed" class="mr-2 mb-2" @click="subscribe">Subscribe</v-btn>
-    <v-btn v-if="connected && subscribed" class="mr-2 mb-2" @click="send('/app/karten', 'sending to /app/karten')">Send to /app/karten</v-btn>
-    <!-- <v-btn @click="send('/user/karten', 'sending to user/karten')">Send to /user/karten</v-btn>
-    <v-btn @click="send('/topic/greetings', 'sending to /topic/greetings')">Send to /topic/greetings</v-btn>
-    <v-btn @click="send('/app/hello', 'sending to /app/hello')">Send to /app/hello</v-btn> -->
-    <v-btn v-if="connected && subscribed" class="mr-2 mb-2" @click="send('/app/join/table', 'SomeTable')">Join Poker Table</v-btn>
+    <v-btn v-if="connected && subscribed" class="mr-2 mb-2" @click="publish('/app/karten', 'sending to /app/karten')">Send to /app/karten</v-btn>
+    <!-- <v-btn @click="publish('/user/karten', 'sending to user/karten')">Send to /user/karten</v-btn>
+    <v-btn @click="publish('/topic/greetings', 'sending to /topic/greetings')">Send to /topic/greetings</v-btn>
+    <v-btn @click="publish('/app/hello', 'sending to /app/hello')">Send to /app/hello</v-btn> -->
+    <v-btn v-if="connected && subscribed" class="mr-2 mb-2" @click="publish('/app/join/table', 'SomeTable')">Join Poker Table</v-btn>
     <div>Chat</div>
     <div class="chat-window pa-3 my-3" v-chat-scroll>
-      <div class="message" v-for="message in messages" :key="message.text + Date.now()">
+      <div class="message" v-for="message in messages" :key="message.text + message.timestamp">
         {{ message.user }} : {{ message.text }}
       </div>
     </div>
@@ -39,6 +39,10 @@ export default class Home extends Vue {
 
   set chatInputMessage(value) {
     pokerModule.chatInputMessage = value;
+  }
+
+  publish(destination: string, body: any) {
+    pokerModule.publish(destination, body);
   }
 
   get loading() {

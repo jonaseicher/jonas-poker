@@ -70,6 +70,13 @@ public class PokerController {
 		return playersInLobby;
 	}
 
+	//////////////// Chat
+	// @MessageMapping("/chat")
+	// @SendTo("/chat")
+	// public ChatMessage chatMessage(@Payload ChatMessage chatMessage) {
+	// 	return chatMessage;
+	// }
+
 	//////////////// Join a poker table
 
 	@MessageMapping("/join/table")
@@ -155,4 +162,11 @@ class VuePlayer {
 		}
 	}
 
+}
+
+
+@Data
+class ChatMessage {
+	String user;
+	String text;
 }
