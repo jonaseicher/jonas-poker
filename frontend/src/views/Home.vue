@@ -1,5 +1,11 @@
 <template>
   <v-container>
+    <!-- <a href="https://dev-3lnv-vrr.eu.auth0.com/authorize?scope=openid profile&response_type=token&client_id=9wQDflrHGcuj5KuLvj2KMndatmz7bpLc&redirect_uri=http://localhost:8180&nonce=12345789">
+    Sign In
+    </a> -->
+    <v-btn @click="login">Sign In</v-btn>
+    <v-btn @click="logout">Logout</v-btn>
+    <span>{{ user }}</span>
     <v-text-field label="Name" outlined v-model="player.name" @keyup="changeName"/>
     <ul v-for="player in players" :key="player.id">
       <li>
@@ -11,11 +17,13 @@
     <v-btn v-if="!connected" class="mr-2 mb-2" @click="connect">Connect</v-btn>
     <v-btn v-else class="mr-2 mb-2" @click="disconnect">Disconnect</v-btn>
     <v-btn v-if="connected && !subscribed" class="mr-2 mb-2" @click="subscribe">Subscribe</v-btn>
-    <v-btn v-if="connected && subscribed" class="mr-2 mb-2" @click="publish('/app/karten', 'sending to /app/karten')">Send to /app/karten</v-btn>
-    <!-- <v-btn @click="publish('/user/karten', 'sending to user/karten')">Send to /user/karten</v-btn>
-    <v-btn @click="publish('/topic/greetings', 'sending to /topic/greetings')">Send to /topic/greetings</v-btn>
-    <v-btn @click="publish('/app/hello', 'sending to /app/hello')">Send to /app/hello</v-btn> -->
-    <v-btn v-if="connected && subscribed" class="mr-2 mb-2" @click="publish('/app/join/table', 'SomeTable')">Join Poker Table</v-btn>
+    <div v-if="connected && subscribed">
+      <v-btn  class="mr-2 mb-2" @click="publish('/app/karten', 'sending to /app/karten')">Send to /app/karten</v-btn>
+       <v-btn class="mr-2 mb-2" @click="publish('/app/cards', 'sending to /app/cards')">Send to /app/cards</v-btn>
+      <!-- <v-btn @click="publish('/topic/greetings', 'sending to /topic/greetings')">Send to /topic/greetings</v-btn>
+      <v-btn @click="publish('/app/hello', 'sending to /app/hello')">Send to /app/hello</v-btn> -->
+      <v-btn class="mr-2 mb-2" @click="publish('/app/join/table', 'SomeTable')">Join Poker Table</v-btn>
+    </div>
     <div>Chat</div>
     <div class="chat-window pa-3 my-3" v-chat-scroll>
       <div class="message" v-for="message in messages" :key="message.text + message.timestamp">
@@ -30,6 +38,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { TexasHoldEmPokerGameType, Player } from 'typedeck';
 import pokerModule from '../store/PokerModule';
+import auth0Module from '../store/Auth0Module';
 
 @Component
 export default class Home extends Vue {
@@ -88,6 +97,41 @@ export default class Home extends Vue {
   changeName() {
     pokerModule.changeName();
   }
+
+  accessToken = '';
+
+  token = '';
+
+  get isAuthenticated() {
+    return auth0Module.isAuthenticated;
+  }
+
+  get user() {
+    return auth0Module.user;
+  }
+
+  login() {
+    return auth0Module.loginWithRedirect({});
+  }
+
+  logout() {
+    return auth0Module.logout({});
+  }
+  // mounted() {
+  //   if (window.location.hash) {
+  //     this.parseHash();
+  //   }
+  // }
+
+  // parseHash(hash = window.location.hash) {
+  //   const matches = hash.match(/access_token=([^&]+).*id_token=([^&]+).*[^_]/);
+  //   if (matches == null || matches.length < 3) {
+  //     throw new Error('Unable to parse id_token from hash.');
+  //   }
+  //   [, this.accessToken, this.token] = matches;
+  //   localStorage.setItem('id_token', this.token);
+  //   localStorage.setItem('access_token', this.accessToken);
+  // }
 }
 
 </script>

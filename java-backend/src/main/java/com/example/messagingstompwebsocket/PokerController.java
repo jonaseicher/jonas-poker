@@ -3,22 +3,17 @@ package com.example.messagingstompwebsocket;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import com.example.messagingstompwebsocket.pokerlib.Player;
 import com.example.messagingstompwebsocket.pokerlib.TexasHoldemGame;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -98,6 +93,15 @@ public class PokerController {
 	public String karten(@Payload String message, Principal user) throws Exception {
 		System.out.println("Received message in /app/karten: " + message + " from " + user);
 		return "Here are your karten! ";
+	}
+
+	@MessageMapping("/cards")
+	// @SendToUser("/queue/cards")
+	public void cards(@Payload String message, Principal user, SimpMessageHeaderAccessor sha) throws Exception {
+		String sessionId = String.valueOf(sha.getHeader("simpSessionId"));
+		System.out.println("Received message in /app/cards: " + message + " from " + user);
+		template.convertAndSendToUser("jonas", "/queue/cards", message);	
+		// return "Here are your cards!";
 	}
 
 	@MessageExceptionHandler
