@@ -2,10 +2,12 @@ import {
   VuexModule, Module, Action, Mutation, RegisterOptions,
 } from 'vuex-class-modules';
 import createAuth0Client, { Auth0Client, Auth0ClientOptions } from '@auth0/auth0-spa-js';
+import AuthState from '@/model/AuthState';
+import Auth0User from '@/model/Auth0User';
 import store from './store';
 
 
-@Module({ generateMutationSetters: true })
+@Module
 class Auth0Module extends VuexModule {
   /** Define a default action to perform after authentication */
   DEFAULT_REDIRECT_CALLBACK = () => window.history.replaceState({}, document.title, window.location.pathname);
@@ -16,7 +18,7 @@ class Auth0Module extends VuexModule {
 
   isAuthenticated = false;
 
-  user = {};
+  user = new Auth0User();
 
   options: Auth0ClientOptions = {
     domain: 'dev-3lnv-vrr.eu.auth0.com',
@@ -134,10 +136,17 @@ class Auth0Module extends VuexModule {
       this.error = e;
     } finally {
       // Initialize our internal authentication state
-      this.isAuthenticated = await this.auth0Client.isAuthenticated();
-      this.user = await this.auth0Client.getUser();
-      this.loading = false;
+      this.initAuthState({ isAuthenticated: await this.auth0Client.isAuthenticated(), user: await this.auth0Client.getUser() });
     }
+  }
+
+  @Mutation
+  initAuthState(authState: AuthState) {
+    console.log(authState);
+    this.isAuthenticated = authState.isAuthenticated;
+    this.user = authState.user;
+    console.log('user', this.user);
+    this.loading = false;
   }
 }
 
