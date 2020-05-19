@@ -25,7 +25,7 @@ import lombok.Data;
 public class PokerController {
 
 	@Autowired
-	SimpMessagingTemplate template;
+	SimpMessagingTemplate messagingTemplate;
 
 	@Autowired
 	PokerService pokerService;
@@ -100,7 +100,7 @@ public class PokerController {
 	public void cards(@Payload String message, Principal user, SimpMessageHeaderAccessor sha) throws Exception {
 		String sessionId = String.valueOf(sha.getHeader("simpSessionId"));
 		System.out.println("Received message in /app/cards: " + message + " from " + user);
-		template.convertAndSendToUser("jonas", "/queue/cards", message);	
+		messagingTemplate.convertAndSendToUser("jonas", "/queue/cards", message);	
 		// return "Here are your cards!";
 	}
 
@@ -131,7 +131,7 @@ public class PokerController {
 	// @MessageMapping("/humba")
 	// public void karten2(String message, Principal user) throws Exception {
 	// 	System.out.println("Received message in /app/humba: " + message + " from " + user.getName());
-	// 	template.convertAndSendToUser(user.getName(), "/queue/humba", message);
+	// 	messagingTemplate.convertAndSendToUser(user.getName(), "/queue/humba", message);
 	// }
 
 	// calls to /app/hello will be routed to this controller, all calls without app will be handled by a simple broker (receive/send)

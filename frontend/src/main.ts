@@ -1,19 +1,28 @@
 import Vue from 'vue';
+import Vuetify from 'vuetify/lib';
+import vuetify from './plugins/vuetify';
 import App from './App.vue';
 import router from './router';
 import store from './store/store';
-import vuetify from './plugins/vuetify';
+import { Auth0Plugin } from './auth/index';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const VueChatScroll = require('vue-chat-scroll');
-
-Vue.use(VueChatScroll);
+Vue.use(Auth0Plugin, {
+  domain: 'dev-3lnv-vrr.eu.auth0.com',
+  clientId: '9wQDflrHGcuj5KuLvj2KMndatmz7bpLc',
+  // onRedirectCallback: appState => {
+  //   router.push(
+  //     appState && appState.targetUrl
+  //       ? appState.targetUrl
+  //       : window.location.pathname
+  //   );
+  // }
+});
 
 Vue.config.productionTip = false;
 
 new Vue({
+  vuetify,
   router,
   store,
-  vuetify,
   render: (h) => h(App),
 }).$mount('#app');

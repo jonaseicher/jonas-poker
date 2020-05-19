@@ -35,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	JwtDecoder jwtDecoder() {
 		// NimbusJwtDecoder.
-		// return NimbusJwtDecoder.withPublicKey(this.key).build();
+		return NimbusJwtDecoder.withJwkSetUri("https://dev-3lnv-vrr.eu.auth0.com/.well-known/jwks.json").build();
 	}
 
 	@Override

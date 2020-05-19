@@ -25,7 +25,7 @@
       <v-btn class="mr-2 mb-2" @click="publish('/app/join/table', 'SomeTable')">Join Poker Table</v-btn>
     </div>
     <div>Chat</div>
-    <div class="chat-window pa-3 my-3" v-chat-scroll>
+    <div class="chat-window pa-3 my-3">
       <div class="message" v-for="message in messages" :key="message.text + message.timestamp">
         {{ message.user }} : {{ message.text }}
       </div>
@@ -38,7 +38,6 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { TexasHoldEmPokerGameType, Player } from 'typedeck';
 import pokerModule from '../store/PokerModule';
-import auth0Module from '../store/Auth0Module';
 
 @Component
 export default class Home extends Vue {
@@ -102,21 +101,20 @@ export default class Home extends Vue {
 
   token = '';
 
-  get isAuthenticated() {
-    return auth0Module.isAuthenticated;
-  }
-
   get user() {
-    return auth0Module.user;
+    return this.$auth.user;
   }
 
   login() {
-    return auth0Module.loginWithRedirect({});
+    this.$auth.loginWithRedirect();
   }
 
   logout() {
-    return auth0Module.logout({});
+    this.$auth.logout({
+      returnTo: window.location.origin,
+    });
   }
+
   // mounted() {
   //   if (window.location.hash) {
   //     this.parseHash();
