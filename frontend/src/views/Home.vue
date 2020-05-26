@@ -6,6 +6,7 @@
     <v-btn @click="login">Sign In</v-btn>
     <v-btn @click="logout">Logout</v-btn>
     <span>{{ user }}</span>
+    <div>{{ claims.__raw }}</div>
     <v-text-field label="Name" outlined v-model="player.name" @keyup="changeName"/>
     <ul v-for="player in players" :key="player.id">
       <li>
@@ -103,6 +104,10 @@ export default class Home extends Vue {
 
   get user() {
     return this.$auth.user;
+  }
+
+  get claims() {
+    return this.$auth.claims;
   }
 
   login() {

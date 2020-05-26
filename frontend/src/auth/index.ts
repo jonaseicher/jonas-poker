@@ -1,6 +1,6 @@
 /* eslint-disable */
 import Vue from 'vue';
-import createAuth0Client, { Auth0Client } from '@auth0/auth0-spa-js';
+import createAuth0Client, { Auth0Client, IdToken } from '@auth0/auth0-spa-js';
 
 /** Define a default action to perform after authentication */
 const DEFAULT_REDIRECT_CALLBACK = () => window.history.replaceState({}, document.title, window.location.pathname);
@@ -28,6 +28,7 @@ export const useAuth0 = ({
         auth0Client: new Auth0Client({ domain: '', client_id: '' }),
         popupOpen: false,
         error: null,
+        claims: {},
       };
     },
     methods: {
@@ -115,7 +116,8 @@ export const useAuth0 = ({
           console.log(token);
           const claims = await this.auth0Client.getIdTokenClaims();
           console.log(claims); // TODO: use claims.raw as auth token for backend
-
+          this.claims = claims;
+          localStorage.setItem('id_token', claims.__raw);
           // Notify subscribers that the redirect callback has happened, passing the appState
           // (useful for retrieving any pre-authentication state)
           onRedirectCallback();

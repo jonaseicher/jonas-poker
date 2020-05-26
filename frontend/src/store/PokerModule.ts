@@ -80,6 +80,9 @@ class PokerModule extends VuexModule {
   connect() {
     this.setConnectHandler();
     this.setDisconnectHandler();
+    this.stompClient.connectHeaders = {
+      Authorization: `Bearer ${localStorage.getItem('id_token')}`,
+    };
     this.stompClient.activate();
   }
 
