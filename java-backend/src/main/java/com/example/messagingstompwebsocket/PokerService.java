@@ -15,12 +15,14 @@ public class PokerService {
 	public TexasHoldemGame joinTable(String tableName, String playerName) {
     for (TexasHoldemGame game: this.games) {
       if (game.getTableName().equals(tableName)) {
+        // TODO check and add player
         return game;
       }
     }
     TexasHoldemGame newGame = new TexasHoldemGame();
     newGame.setTableName(tableName);
     games.add(newGame);
+    // newGame.getPlayers().add(e) add player
     return newGame;
   }
   

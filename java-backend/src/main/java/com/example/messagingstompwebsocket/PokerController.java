@@ -95,14 +95,14 @@ public class PokerController {
 		return "Here are your karten! ";
 	}
 
-	@MessageMapping("/cards")
-	// @SendToUser("/queue/cards")
-	public void cards(@Payload String message, Principal user, SimpMessageHeaderAccessor sha) throws Exception {
-		String sessionId = String.valueOf(sha.getHeader("simpSessionId"));
-		System.out.println("Received message in /app/cards: " + message + " from " + user);
-		messagingTemplate.convertAndSendToUser("jonas", "/queue/cards", message);	
-		// return "Here are your cards!";
-	}
+	// @MessageMapping("/cards")
+	// // @SendToUser("/queue/cards")
+	// public void cards(@Payload String message, Principal user, SimpMessageHeaderAccessor sha) throws Exception {
+	// 	String sessionId = String.valueOf(sha.getHeader("simpSessionId"));
+	// 	System.out.println("Received message in /app/cards: " + message + " from " + user);
+	// 	messagingTemplate.convertAndSendToUser("jonas", "/queue/cards", message);	
+	// 	// return "Here are your cards!";
+	// }
 
 	@MessageExceptionHandler
 	@SendToUser("/queue/errors")
