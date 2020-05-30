@@ -6,7 +6,7 @@ import stompModule from './StompModule';
 import store from './store';
 
 @Module({ generateMutationSetters: true })
-class PokerModule extends VuexModule {
+class ChatModule extends VuexModule {
   players: any = [];
 
   messages: any[] = [];
@@ -58,18 +58,8 @@ class PokerModule extends VuexModule {
     });
 
     this.subscribed = true;
-
-    // trying the node broker
-    // stompModule.subscribe('/*', (x) => console.log(x));
-    // stompModule.subscribe('/test', (x) => console.log(x));
-
-    // this works with the spring boot broker
-    stompModule.subscribe({ destination: '/join/table', callback: (message) => console.log(message) });
-    stompModule.subscribe({ destination: '/user/queue/error', callback: (message) => console.log(message) });
-    stompModule.subscribe({ destination: '/user/queue/karten', callback: (message) => console.log(message) });
-    stompModule.subscribe({ destination: '/user/queue/cards', callback: (message) => console.log(message) });
   }
 }
 
-const pokerModule = new PokerModule({ store, name: 'poker' });
-export default pokerModule;
+const chatModule = new ChatModule({ store, name: 'chat' });
+export default chatModule;
