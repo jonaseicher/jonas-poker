@@ -58,6 +58,11 @@
     <v-app-bar app clipped-left>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>Jonas-Poker <v-icon large>mdi-cards</v-icon></v-toolbar-title>
+
+      <v-spacer></v-spacer>
+
+      <AccountComponent />
+
     </v-app-bar>
 
     <v-content>
@@ -77,17 +82,15 @@
   </v-app>
 </template>
 
-      <HelloWorld/>
-
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
-import HelloWorld from './components/HelloWorld.vue';
+import AccountComponent from './views/AccountComponent.vue';
 
 @Component({
   components: {
-    HelloWorld,
+    AccountComponent,
   },
 })
 export default class App extends Vue {

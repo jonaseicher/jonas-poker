@@ -2,6 +2,7 @@ import {
   VuexModule, Module, Action, Mutation,
 } from 'vuex-class-modules';
 import ChatMessage from '@/model/ChatMessage';
+import { IMessage } from '@stomp/stompjs';
 import stompModule from './StompModule';
 import store from './store';
 
@@ -12,6 +13,8 @@ class PokerModule extends VuexModule {
   messages: any[] = [];
 
   subscribed = false;
+
+  pokerTable: any = {};
 
   chatInputMessage = '';
 
@@ -64,10 +67,15 @@ class PokerModule extends VuexModule {
     // stompModule.subscribe('/test', (x) => console.log(x));
 
     // this works with the spring boot broker
-    stompModule.subscribe({ destination: '/join/table', callback: (message) => console.log(message) });
+    stompModule.subscribe({ destination: '/join/table', callback: this.joinTable });
     stompModule.subscribe({ destination: '/user/queue/error', callback: (message) => console.log(message) });
     stompModule.subscribe({ destination: '/user/queue/karten', callback: (message) => console.log(message) });
     stompModule.subscribe({ destination: '/user/queue/cards', callback: (message) => console.log(message) });
+  }
+
+  joinTable(message: IMessage) {
+    this.pokerTable = message.body;
+    console.log('pokerTable', this.pokerTable);
   }
 }
 
