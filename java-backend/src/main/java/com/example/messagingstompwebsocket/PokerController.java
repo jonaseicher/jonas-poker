@@ -9,19 +9,22 @@ import com.example.messagingstompwebsocket.pokerlib.TexasHoldemGame;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import lombok.Data;
+import lombok.extern.java.Log;
 
 @RestController
+@Log
 public class PokerController {
 
 	@Autowired
@@ -91,7 +94,7 @@ public class PokerController {
 	@MessageMapping("/karten")
 	@SendToUser("/queue/karten")
 	public String karten(@Payload String message, Principal user) throws Exception {
-		System.out.println("Received message in /app/karten: " + message + " from " + user);
+		log.info("Received message in /app/karten: " + message + " from " + user);
 		return "Here are your karten! ";
 	}
 
@@ -99,7 +102,7 @@ public class PokerController {
 	// // @SendToUser("/queue/cards")
 	// public void cards(@Payload String message, Principal user, SimpMessageHeaderAccessor sha) throws Exception {
 	// 	String sessionId = String.valueOf(sha.getHeader("simpSessionId"));
-	// 	System.out.println("Received message in /app/cards: " + message + " from " + user);
+	// 	log.info("Received message in /app/cards: " + message + " from " + user);
 	// 	messagingTemplate.convertAndSendToUser("jonas", "/queue/cards", message);	
 	// 	// return "Here are your cards!";
 	// }
@@ -109,6 +112,13 @@ public class PokerController {
 	public String handleException(Throwable exception) {
 			return exception.getMessage();
 	}
+
+	@EventListener
+  public void onDisconnectEvent(SessionDisconnectEvent event) {
+		log.info("Annotation: Client with username " + event.getUser() + " disconnected");
+		log.info("name " + event.getUser().getName() + " disconnected");
+		Object o = event.getSessionId();
+  }
 
 
 
@@ -130,7 +140,7 @@ public class PokerController {
 
 	// @MessageMapping("/humba")
 	// public void karten2(String message, Principal user) throws Exception {
-	// 	System.out.println("Received message in /app/humba: " + message + " from " + user.getName());
+	// 	log.info("Received message in /app/humba: " + message + " from " + user.getName());
 	// 	messagingTemplate.convertAndSendToUser(user.getName(), "/queue/humba", message);
 	// }
 
@@ -138,7 +148,7 @@ public class PokerController {
 	// @MessageMapping("/hello")
 	// @SendTo("/topic/greetings")
 	// public Greeting greeting(String message) throws Exception {
-	// 	System.out.println("Received message " + message + " in /app/hello. sending to /topic/greetings");
+	// 	log.info("Received message " + message + " in /app/hello. sending to /topic/greetings");
 	// 	return new Greeting("Hello, " + HtmlUtils.htmlEscape(message) + "!");
 	// }
 
