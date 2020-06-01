@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
  public class GameMessage {
   // The UID of the player sending the message.
-  private final Long playerId;
+  private final String playerId;
   
   // The type of game message.
   private final Type type;
@@ -45,7 +45,7 @@ import lombok.Data;
   private final String data;
   
   
-  public GameMessage(Long playerId, Type type, ActionType actionType, int number, String data) {
+  public GameMessage(String playerId, Type type, ActionType actionType, int number, String data) {
     this.playerId = playerId;
     this.type = type;
     this.actionType = actionType;

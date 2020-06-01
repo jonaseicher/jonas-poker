@@ -155,7 +155,7 @@ class NameChange {
 class VuePlayer {
 	String name;
 
-	Long id;
+	String id;
 
 	@JsonIgnore
 	Player player;

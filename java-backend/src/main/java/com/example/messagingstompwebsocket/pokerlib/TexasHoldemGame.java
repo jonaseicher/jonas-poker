@@ -116,7 +116,7 @@ public class TexasHoldemGame {
    * @param playerId The UID of the player to find.
    * @return the player with the given UID.
    */
-  public Player getPlayer(Long playerId) {
+  public Player getPlayer(String playerId) {
     for (int i = 0; i < players.size(); i++) {
       if (players.get(i).getId().equals(playerId)) {
         return players.get(i);
@@ -380,7 +380,7 @@ public class TexasHoldemGame {
       System.out.println(LOG_TAG + " Bad NEW_HAND message.");
     }
     for (int i = 0; i < playerCount; i++) {
-      Long uid = Long.valueOf(playerParts[i*3]);
+      String uid = String.valueOf(playerParts[i*3]);
       String name = playerParts[i*3 + 1];
       int chips = Integer.parseInt(playerParts[i*3 + 2]);
       players.add(new Player(uid, name, chips));
@@ -388,7 +388,7 @@ public class TexasHoldemGame {
     setNextPlayers();
     
     // Set the button.
-    button = getPlayer(Long.valueOf(parts[1]));
+    button = getPlayer(String.valueOf(parts[1]));
   }
   
   /**

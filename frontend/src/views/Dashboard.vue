@@ -1,8 +1,7 @@
 <template>
   <v-container>
-    <span>{{ auth.user }}</span>
     <StompComponent v-if="auth.isAuthenticated" />
-    <ChatComponent v-if="connected" />
+    <ChatComponent v-if="stomp.connected" />
   </v-container>
 </template>
 
@@ -20,9 +19,13 @@ import stompModule from '../store/StompModule';
     StompComponent,
   },
 })
-export default class Home extends Vue {
+export default class Dashboard extends Vue {
   get auth() {
     return this.$auth;
+  }
+
+  get stomp() {
+    return stompModule;
   }
 }
 

@@ -15,7 +15,7 @@ import lombok.Data;
 @Data
 public class Player {
   // The id of the player.
-  private Long id;
+  private String id;
   // The name of the player.
   private String name;
   // The number of chips the player has. This does not include any chips that the player has
@@ -44,7 +44,7 @@ public class Player {
   
   private static final String LOG_TAG = Player.class.getSimpleName();
   
-  public Player(Long id, String name, int chips) {
+  public Player(String id, String name, int chips) {
     this.id = id;
     this.name = name;
     this.chips = chips;

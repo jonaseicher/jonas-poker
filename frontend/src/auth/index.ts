@@ -1,6 +1,8 @@
 /* eslint-disable */
 import Vue from 'vue';
 import createAuth0Client, { Auth0Client, IdToken } from '@auth0/auth0-spa-js';
+import stompModule from '../store/StompModule';
+import chatModule from '@/store/ChatModule';
 
 /** Define a default action to perform after authentication */
 const DEFAULT_REDIRECT_CALLBACK = () => window.history.replaceState({}, document.title, window.location.pathname);
@@ -113,14 +115,16 @@ export const useAuth0 = ({
           // handle the redirect and retrieve tokens
           const { appState } = await this.auth0Client.handleRedirectCallback();
           const token = await this.auth0Client.getTokenSilently();
-          console.log(token);
+          // console.log(token);
           const claims = await this.auth0Client.getIdTokenClaims();
-          console.log(claims); // TODO: use claims.raw as auth token for backend
+          // console.log(claims);
           this.claims = claims;
           localStorage.setItem('id_token', claims.__raw);
           // Notify subscribers that the redirect callback has happened, passing the appState
           // (useful for retrieving any pre-authentication state)
           onRedirectCallback();
+          stompModule.connect();
+          stompModule.idToken = claims;
         }
       } catch (e) {
         this.error = e;

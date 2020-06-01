@@ -1,5 +1,7 @@
 <template>
   <div>
+    <v-icon v-if="stomp.connected">mdi-link</v-icon>
+    <v-icon v-else>mdi-link-off</v-icon>
     <v-menu v-if="auth.isAuthenticated" offset-y>
       <template v-slot:activator="{ on }">
         <v-btn v-on="on">
@@ -27,12 +29,17 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import stompModule from '../store/StompModule';
 
 
 @Component
 export default class AccountComponent extends Vue {
   get auth() {
     return this.$auth;
+  }
+
+  get stomp() {
+    return stompModule;
   }
 
   login() {

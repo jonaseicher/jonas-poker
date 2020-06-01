@@ -29,6 +29,7 @@ Done:
 - PokerController has joinTable and /app/karten which probably work, but don't do anything yet.
 
 TODO:
+- update players on server side when connection closes and update all clients.
 - PokerService: finish implementing create table/add player
 - Send Table state (without secret cards)
 - Deal secret cards to players

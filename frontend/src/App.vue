@@ -2,7 +2,7 @@
   <v-app id="jonas-poker">
     <v-navigation-drawer v-model="drawer" app clipped>
       <v-list dense>
-        <router-link to="/about" tag="v-list-item">
+        <router-link to="/" tag="v-list-item">
         <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-view-dashboard</v-icon>
@@ -12,7 +12,7 @@
           </v-list-item-content>
         </v-list-item>
         </router-link>
-        <router-link to="/" tag="v-list-item">
+        <router-link to="/chat" tag="v-list-item">
         <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-chat</v-icon>

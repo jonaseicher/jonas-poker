@@ -1,64 +1,75 @@
 <template>
   <v-container>
-    <v-text-field label="Name" outlined v-model="player.name" @keyup="changeName"/>
-    <ul v-for="player in players" :key="player.id">
-      <li>
-        <span>
-          {{ player.name }}
-        </span>
-      </li>
-    </ul>
-    <v-btn v-if="!subscribed" class="mr-2 mb-2" @click="subscribe">Subscribe</v-btn>
-    <div>Chat</div>
-    <div class="chat-window pa-3 my-3">
-      <div class="message" v-for="message in messages" :key="message.text + message.timestamp">
-        {{ message.user }} : {{ message.text }}
-      </div>
-    </div>
-    <v-text-field v-if="subscribed" outlined v-model="chatInputMessage" @keyup.enter="chat"/>
+    <v-row>
+      <v-col>
+        <v-text-field label="Name" outlined v-model="chat.player.name" @keyup="chat.changeName"/>
+        <v-btn v-if="!chat.subscribed" class="mr-2 mb-2" @click="chat.subscribe">Subscribe</v-btn>
+        <div class="chat-window pa-3 my-3">
+          <div class="message" v-for="message in chat.messages" :key="message.text + message.timestamp">
+            {{ message.user }} : {{ message.text }}
+          </div>
+        </div>
+      </v-col>
+      <v-col class="col-3">
+        <v-list>
+          <v-list-item-group
+          v-model="selected"
+          multiple
+          active-class="pink--text"
+        >
+          <v-list-item v-for="player in chat.players" :key="player.id">
+            <template v-slot:default="{ active }">
+              <v-list-item-content>
+                <v-list-item-title>{{ player.name }} </v-list-item-title>
+                <!-- <v-list-item-subtitle class="text--primary">Other title</v-list-item-subtitle>
+                <v-list-item-subtitle>Subtitle</v-list-item-subtitle> -->
+              </v-list-item-content>
+
+              <v-list-item-action>
+                <!-- <v-list-item-action-text>Add to favorites</v-list-item-action-text> -->
+                <v-icon
+                  v-if="!active"
+                  color="grey lighten-1"
+                >
+                  mdi-star-outline
+                </v-icon>
+
+                <v-icon
+                  v-else
+                  color="yellow"
+                >
+                  mdi-star
+                </v-icon>
+              </v-list-item-action>
+            </template>
+          </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-col>
+    </v-row>
+    <v-text-field outlined
+      v-if="chat.subscribed"
+      v-model="chat.chatInputMessage"
+      @keyup.enter="chat.sendChatMessage"
+    />
   </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import chatModule from '../store/ChatModule';
+import stompModule from '../store/StompModule';
 
 @Component
 export default class ChatComponent extends Vue {
-  get chatInputMessage() {
-    return chatModule.chatInputMessage;
+  get chat() {
+    return chatModule;
   }
 
-  set chatInputMessage(value) {
-    chatModule.chatInputMessage = value;
-  }
-
-  get subscribed() {
-    return chatModule.subscribed;
-  }
-
-  get player() {
-    return chatModule.player;
-  }
-
-  get players() {
-    return chatModule.players;
-  }
-
-  get messages() {
-    return chatModule.messages;
-  }
-
-  subscribe() {
-    chatModule.subscribe();
-  }
-
-  chat() {
-    chatModule.sendChatMessage();
-  }
-
-  changeName() {
-    chatModule.changeName();
+  created() {
+    if (!chatModule.subscribed) {
+      chatModule.subscribe();
+    }
   }
 }
 

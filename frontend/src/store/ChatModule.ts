@@ -15,23 +15,23 @@ class ChatModule extends VuexModule {
 
   chatInputMessage = '';
 
-  player = { name: `Player-${Math.floor(Math.random() * 1000)}`, id: Math.floor(Math.random() * 100000000) };
-
+  // eslint-disable-next-line no-underscore-dangle
+  player = { name: stompModule.idToken.name, id: stompModule.idToken.__raw }
 
   @Action
   sendChatMessage() {
-    stompModule.publish('/chat', { user: this.player.name, text: this.chatInputMessage, timestamp: Date.now() });
+    stompModule.publish('/chat', { user: stompModule.idToken.name, text: this.chatInputMessage, timestamp: Date.now() });
     this.chatInputMessage = '';
   }
 
   @Action
   changeName() {
-    stompModule.publish('/app/lobby/player/changed', JSON.stringify(this.player));
+    stompModule.publish('/app/lobby/player/changed', this.player);
   }
 
   @Mutation
   addMessage(message?: ChatMessage) {
-    if (!message) this.messages.push({ user: this.player.name, text: this.chatInputMessage });
+    if (!message) this.messages.push({ user: stompModule.idToken.name, text: this.chatInputMessage });
     else { this.messages.push(message); }
     if (this.messages.length > 10) this.messages.shift();
   }
@@ -41,20 +41,24 @@ class ChatModule extends VuexModule {
     stompModule.subscribe({
       destination: '/lobby/players',
       callback: (message) => {
-        console.log(message);
+        console.log('/lobby/players', message);
         this.players = JSON.parse(message.body);
       },
     });
     stompModule.subscribe({ destination: '/chat', callback: (message) => this.addMessage(JSON.parse(message.body)) });
     stompModule.subscribe({ destination: '/lobby/tables', callback: (message) => console.log(message) });
 
-    this.addMessage({ user: 'Lobby', text: `Welcome to the Lobby, ${this.player.name}!` });
+    this.addMessage({ user: 'Lobby', text: `Welcome to the Lobby, ${stompModule.idToken.name}!` });
 
-    stompModule.publish('/app/lobby/player/new', JSON.stringify(this.player));
+    // eslint-disable-next-line no-underscore-dangle
+    this.player = { name: stompModule.idToken.name, id: stompModule.idToken.__raw };
+    console.log('publishing', JSON.stringify(this.player));
+    // stompModule.publish('/app/lobby/player/new', { name: 'SomePlayer', id: '123' });
+    stompModule.publish('/app/lobby/player/new', this.player);
 
     window.document.addEventListener('beforeunload', () => {
       console.log('beforeDestroy called');
-      stompModule.publish('/app/lobby/player/deleted', JSON.stringify(this.player));
+      stompModule.publish('/app/lobby/player/deleted', this.player);
     });
 
     this.subscribed = true;

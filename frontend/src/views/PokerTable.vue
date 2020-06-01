@@ -1,5 +1,7 @@
 <template>
   <v-container>
+    <v-btn>Join Table</v-btn>
+    <v-btn>Deal Cards</v-btn>
     {{ poker.pokerTable }}
   </v-container>
 </template>
