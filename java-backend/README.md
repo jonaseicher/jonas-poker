@@ -28,18 +28,18 @@ Done:
 - Stomp connect with Auth Header (id_token, BearerTokenInterceptor), uses sub as user and routes stomp messages to the user via Principal
 - PokerController has joinTable and /app/karten which probably work, but don't do anything yet.
 - update players on server side when connection closes and update all clients.
+  I can see a list of poker tables that I can join.
+  - Name of Table, Number of Players on the table, game state.
 
 TODO:
-
-- PokerService: finish implementing create table/add player
+- create github actions to build/deploy project somewhere
+- I can join one table.
 - Send Table state (without secret cards)
+- PokerService: finish implementing create table/add player
 - Deal secret cards to players
 - Manage game state
 - Implement poker game
 - clean up the UI
 
-I can see a list of poker tables that I can join.
-- Name of Table, Number of Players on the table, game state.
 
-I can join one table.
 
