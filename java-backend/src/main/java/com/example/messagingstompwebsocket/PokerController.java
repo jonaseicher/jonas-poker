@@ -16,11 +16,14 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Delegate;
 import lombok.extern.java.Log;
 
 @RestController
@@ -33,39 +36,9 @@ public class PokerController {
 	@Autowired
 	PokerService pokerService;
 
-	List<VuePlayer> playersInLobby = new ArrayList<>();
-
 	@GetMapping("/rest")
 	public String rest() {
 		return "Welcome Player! Use the Frontend to connect to the Websockets!";
-	}
-
-	//////////////// Lobby
-
-	@MessageMapping("/lobby/player/new")
-	@SendTo("/lobby/players")
-	public List<VuePlayer> newPlayer(@Payload VuePlayer player) {
-		player.initPlayer();
-		playersInLobby.add(player);
-		return playersInLobby;
-	}
-
-	@MessageMapping("/lobby/player/deleted")
-	@SendTo("/lobby/players")
-	public List<VuePlayer> deletedPlayer(@Payload VuePlayer player) {
-		playersInLobby.remove(player);
-		return playersInLobby;
-	}
-
-	@MessageMapping("/lobby/player/changed")
-	@SendTo("/lobby/players")
-	public List<VuePlayer> changedPlayer(@Payload VuePlayer player) {
-		playersInLobby.forEach(p -> {
-			if (p.getId().equals(player.getId())) {
-				p.setName(player.getName());
-			}
-		});
-		return playersInLobby;
 	}
 
 	//////////////// Chat
@@ -113,30 +86,6 @@ public class PokerController {
 			return exception.getMessage();
 	}
 
-	@EventListener
-  public void onDisconnectEvent(SessionDisconnectEvent event) {
-		log.info("Annotation: Client with username " + event.getUser() + " disconnected");
-		log.info("name " + event.getUser().getName() + " disconnected");
-		Object o = event.getSessionId();
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	// @MessageMapping("/humba")
 	// public void karten2(String message, Principal user) throws Exception {
@@ -152,35 +101,4 @@ public class PokerController {
 	// 	return new Greeting("Hello, " + HtmlUtils.htmlEscape(message) + "!");
 	// }
 
-}
-
-
-@Data
-class NameChange {
-	String oldName;
-	String newName;
-}
-
-@Data
-class VuePlayer {
-	String name;
-
-	String id;
-
-	@JsonIgnore
-	Player player;
-
-	public void initPlayer() {
-		if (this.player == null) {
-			this.player = new Player(id, name, 500);
-		}
-	}
-
-}
-
-
-@Data
-class ChatMessage {
-	String user;
-	String text;
 }

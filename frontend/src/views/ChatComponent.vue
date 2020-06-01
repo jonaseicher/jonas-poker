@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col>
-        <v-text-field label="Name" outlined v-model="chat.player.name" @keyup="chat.changeName"/>
+        <!-- <v-text-field label="Name" outlined v-model="chat.player.name" @keyup="chat.changeName"/> -->
         <v-btn v-if="!chat.subscribed" class="mr-2 mb-2" @click="chat.subscribe">Subscribe</v-btn>
         <div class="chat-window pa-3 my-3">
           <div class="message" v-for="message in chat.messages" :key="message.text + message.timestamp">
@@ -12,6 +12,7 @@
       </v-col>
       <v-col class="col-3">
         <v-list>
+          <v-subheader>USERS IN CHAT</v-subheader>
           <v-list-item-group
           v-model="selected"
           multiple
@@ -62,6 +63,8 @@ import stompModule from '../store/StompModule';
 
 @Component
 export default class ChatComponent extends Vue {
+  selected = [];
+
   get chat() {
     return chatModule;
   }

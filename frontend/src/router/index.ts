@@ -16,6 +16,11 @@ const routes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "chat" */ '../views/ChatComponent.vue'),
   },
   {
+    path: '/lobby',
+    name: 'TableLobby',
+    component: () => import(/* webpackChunkName: "table" */ '../views/TableLobby.vue'),
+  },
+  {
     path: '/table',
     name: 'PokerTable',
     component: () => import(/* webpackChunkName: "table" */ '../views/PokerTable.vue'),
