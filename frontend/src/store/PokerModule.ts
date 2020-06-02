@@ -29,7 +29,7 @@ class PokerModule extends VuexModule {
 
   @Action
   changeName() {
-    stompModule.publish('/app/lobby/player/changed', JSON.stringify(this.player));
+    stompModule.publish('/app/lobby/player/changed', this.player);
   }
 
   @Mutation
@@ -53,11 +53,11 @@ class PokerModule extends VuexModule {
 
     this.addMessage({ user: 'Lobby', text: `Welcome to the Lobby, ${this.player.name}!` });
 
-    stompModule.publish('/app/lobby/player/new', JSON.stringify(this.player));
+    stompModule.publish('/app/lobby/player/new', this.player);
 
     window.document.addEventListener('beforeunload', () => {
       console.log('beforeDestroy called');
-      stompModule.publish('/app/lobby/player/deleted', JSON.stringify(this.player));
+      stompModule.publish('/app/lobby/player/deleted', this.player);
     });
 
     this.subscribed = true;

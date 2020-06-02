@@ -69,7 +69,11 @@ class StompModule extends VuexModule {
     this.stompClient.deactivate();
   }
 
-  publish(destination: string, body: any) {
+  publishString(destination: string, body: string) {
+    this.stompClient.publish({ destination, body });
+  }
+
+  publish(destination: string, body: object) {
     this.stompClient.publish({ destination, body: JSON.stringify(body) });
   }
 

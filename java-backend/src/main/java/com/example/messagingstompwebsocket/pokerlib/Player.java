@@ -5,14 +5,20 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Represents a poker player.
  *
  * @author andyehou@gmail.com (Andy Hou)
  */
-@Data
+@Getter
+@Setter
+@ToString(of = {"id", "name", "chips", "bet", "potContribution", "chipsAwarded", "isFolded", "isReady"})
+@EqualsAndHashCode(of = { "id" })
 public class Player {
   // The id of the player.
   private String id;
