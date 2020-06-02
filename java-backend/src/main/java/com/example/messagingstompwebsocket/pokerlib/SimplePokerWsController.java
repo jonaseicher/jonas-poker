@@ -1,6 +1,7 @@
 package com.example.messagingstompwebsocket.pokerlib;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,8 +54,8 @@ public class SimplePokerWsController {
 
 	@MessageMapping("/poker/game/bet")
 	@SendTo("/queue/pokertable")
-	public TexasHoldemGame bet(@RequestParam String playerId, @RequestParam int amount) {
-    game.bet(playerId, amount);
+	public TexasHoldemGame bet(@Payload Bet bet) {
+    game.bet(bet.playerId, bet.amount);
 		return game;
   }
   
@@ -65,4 +66,9 @@ public class SimplePokerWsController {
 		return game;
   }
 
+}
+
+class Bet {
+  String playerId;
+  int amount;
 }
