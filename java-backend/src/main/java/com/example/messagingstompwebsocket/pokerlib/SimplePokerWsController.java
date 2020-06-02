@@ -8,11 +8,11 @@ import lombok.extern.java.Log;
 
 @RestController
 @Log
-public class SimplePokerRestController {
+public class SimplePokerWsController {
 
   TexasHoldemGame game;
 
-  public SimplePokerRestController() {
+  public SimplePokerWsController() {
     game = new TexasHoldemGame();
   }
 
