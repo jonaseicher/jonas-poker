@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.example.messagingstompwebsocket.pokerlib.GameMessage.ActionType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 
 /**
@@ -18,6 +21,7 @@ public class TexasHoldemGame {
   // Name of the poker table/game
   private String tableName;
   // The deck of cards to draw cards from.
+  @JsonIgnore
   private Deck deck;
   // The players in the game (myself is index 0).
   private List<Player> players;
@@ -53,6 +57,12 @@ public class TexasHoldemGame {
   // NONE if the communication channel is disconnected.
   public enum State {
     NONE, BET_1, BET_2, BET_3, BET_4, HAND_DONE
+  }
+
+  public enum ActionType {
+    NONE,
+    FOLD,
+    BET
   }
 
   private static final int BUY_IN_CHIPS = 20;
@@ -182,111 +192,95 @@ public class TexasHoldemGame {
     return Math.max(BIG_BLIND, getToCallAmount() * 2 + getPotContribution());
   }
   
-  /**
-   * Handles a message about the game, such as a player taking an action or
-   * an message containing game state.
-   * @param message The message about the game.
-   */
-  public void handleGameMessage(GameMessage message) {
-    //Log.i(LOG_TAG, "Handling game message: " + message);
-    switch (message.getType()) {
-      
-      case SYNC_GAME_STATE:
+ 
+  public void act(String playerId, ActionType action, int amount) {
+    // Check that the player sending the message is the current player to act.
+    if (actor != null && actor.getId().equals(playerId)) {
+      switch (action) {
+        case NONE:
+        // Should not happen. Treat as fold.
+        System.out.println(LOG_TAG + " Got PLAYER_ACTION message, but action type is NONE.");
+        case FOLD:
+        if (actor.getBet() < toCallAmount && actor.getBet() < actor.getMaxBet()) {
+          actor.fold();
+        }
+        continueGame();
         break;
-        
-      case PLAYER_ACTION:
-        // Check that the player sending the message is the current player to act.
-        if (actor != null && actor.getId().equals(message.getPlayerId())) {
-          switch (message.getActionType()) {
-            case NONE:
-              // Should not happen. Treat as fold.
-              System.out.println(LOG_TAG + " Got PLAYER_ACTION message, but action type is NONE.");
-            case FOLD:
-              if (actor.getBet() < toCallAmount && actor.getBet() < actor.getMaxBet()) {
-                actor.fold();
-              }
-              continueGame();
-              break;
-            case BET:
-              int amount = message.getNumber();
-              if (amount > toCallAmount) {
-                // Bet or raise.
-                lastRaised = actor;
-                toCallAmount = amount;
-                actor.setBet(amount);
-              } else if (amount < toCallAmount && actor.getMaxBet() > amount) {
-                // Illegal action. Player did not bet at least the call amount
-                // and has more chips (so not going all-in). Treat as fold.
-                System.out.println(LOG_TAG + " Player BET is less than the call amount.");
-                actor.fold();
-              } else {
-                // Check or call.
-                actor.setBet(amount);
-              }
-              continueGame();
-              break;
-          }
+        case BET:
+        if (amount > toCallAmount) {
+          // Bet or raise.
+          lastRaised = actor;
+          toCallAmount = amount;
+          actor.setBet(amount);
+        } else if (amount < toCallAmount && actor.getMaxBet() > amount) {
+          // Illegal action. Player did not bet at least the call amount
+          // and has more chips (so not going all-in). Treat as fold.
+          System.out.println(LOG_TAG + " Player BET is less than the call amount.");
+          actor.fold();
         } else {
-          System.out.println(LOG_TAG + " Got PLAYER_ACTION message from an unexpected player = " +
-              message.getPlayerId() + ", not the actor = " +
-              (actor == null ? "NONE" : actor.getId()));
+          // Check or call.
+          actor.setBet(amount);
         }
+        continueGame();
         break;
+      }
+    } else {
+      System.out.println(LOG_TAG + " Got PLAYER_ACTION message from an unexpected player = " +
+      playerId + ", not the actor = " +
+      (actor == null ? "NONE" : actor.getId()));
+    }
+  }
+  
+  public void joinTable(String playerId) {
+    // Check that the player has not already joined.
+    if (getPlayer(playerId) == null) {
+      Player newPlayer = new Player(playerId, playerId, BUY_IN_CHIPS);
+      newPlayer.setReady(true);
+      if (!isStarted()) {
+        players.add(newPlayer);
+        setNextPlayers();
         
-      case PLAYER_JOINING:
-        if (isHost) {
-          // Check that the player has not already joined.
-          if (getPlayer(message.getPlayerId()) == null) {
-            Player newPlayer = new Player(message.getPlayerId(), message.getData(), BUY_IN_CHIPS);
-            newPlayer.setReady(true);
-            if (!isStarted()) {
-              players.add(newPlayer);
-              setNextPlayers();
-              
-              if (isAllPlayersReadyToStart()) {
-                // Deal a new hand and broadcast sync data to other players.
-                dealNewHand();
-              }
-            } else {
-              // Keep track of new players to deal in on the next hand.
-              newHandPlayers.add(newPlayer);
-            }
-          } else {
-            System.out.println(LOG_TAG + " Got PLAYER_JOINING message from a player already in the game: " +
-                message.getPlayerId());
-          }
+        if (isAllPlayersReadyToStart()) {
+          // Deal a new hand and broadcast sync data to other players.
+          dealNewHand();
         }
-        break;
-        
-      case PLAYER_LEAVING:
-        if (isHost) {
-          Player player = getPlayer(message.getPlayerId());
-          if (player != null) {
-            players.remove(player);
-            setNextPlayers();
-            // TODO: return player bets.
-            dealNewHand();
-          }
+      } else {
+        // Keep track of new players to deal in on the next hand.
+        newHandPlayers.add(newPlayer);
+      }
+    } else {
+      System.out.println(LOG_TAG + " Got PLAYER_JOINING message from a player already in the game: " +
+        playerId);
+    }  
+  }
+    
+  public void leaveTable(String playerId) {
+    if (isHost) {
+      Player player = getPlayer(playerId);
+      if (player != null) {
+        players.remove(player);
+        setNextPlayers();
+        // TODO: return player bets.
+        dealNewHand();
+      }
+    }
+  }
+
+  // public void newHand(String playerId) {
+  //  if (!isHost) {
+  //     setNewHand(message.getNumber(), message.getData());
+  //   }
+  // }
+      
+  public void requestNewHand(String playerId) {
+    if (!isStarted() || state == State.HAND_DONE) {
+      Player player = getPlayer(playerId);
+      if (player != null) {
+        player.setReady(true);
+        if (isHost && isAllPlayersReadyToStart()) {
+          dealNewHand();
         }
-        break;
-        
-      case NEW_HAND:
-        if (!isHost) {
-          setNewHand(message.getNumber(), message.getData());
-        }
-        break;
-        
-      case REQUEST_NEW_HAND:
-        if (!isStarted() || state == State.HAND_DONE) {
-          Player player = getPlayer(message.getPlayerId());
-          if (player != null) {
-            player.setReady(true);
-            if (isHost && isAllPlayersReadyToStart()) {
-              dealNewHand();
-            }
-          }
-        }
-        break;
+      }
     }
   }
   
@@ -296,7 +290,7 @@ public class TexasHoldemGame {
   public void dealNewHand() {
     if (!isHost) {
       System.out.println(LOG_TAG + " Trying to deal a new hand, but not the host player.");
-      return;
+      // return;
     }
     
     cleanupHand();
@@ -322,74 +316,7 @@ public class TexasHoldemGame {
     setupHand();
   }
   
-  /**
-   * Sets member variables for a new hand from the given synchronization data.
-   * @param playerCount The number of players in the hand.
-   * @param data The synchronization data as a string.
-   */
-  public void setNewHand(int playerCount, String data) {
-    if (isHost) {
-      System.out.println(LOG_TAG + " Trying to set a new hand, but am the host player.");
-      return;
-    }
-    
-    cleanupHand();
-    deserializeNewHand(playerCount, data);
-    
-    setupHand();
-  }
-  
-  /**
-   * @return a string that can be used to synchronize the initial game state.
-   */
-  private String serializeNewHand() {
-    // Serialize the deck.
-    String data = deck.serialize() + ",";
-    
-    // Serialize the button.
-    data += button.getId() + ",";
-    
-    // Serialize the players.
-    for (int i = 0; i < players.size(); i++) {
-      Player player = players.get(i);
-      data += player.getId() + "," +
-          player.getName() + "," +
-          player.getChips();
-      if (i < players.size() - 1) {
-        data += ",";
-      }
-    }
 
-    return data;
-  }
-  
-  /**
-   * Sets member variables for a new hand from the given synchronization data.
-   * @param data The new hand synchronization data as a string.
-   */
-  private void deserializeNewHand(int playerCount, String data) {
-    String parts[] = data.split(",", 3);
-    
-    // Set the deck.
-    deck = Deck.deserialize(parts[0]);
-    
-    // Set the players.
-    String playerParts[] = parts[2].split(",", -1);
-    players.clear();
-    if (playerParts.length != playerCount * 3) {
-      System.out.println(LOG_TAG + " Bad NEW_HAND message.");
-    }
-    for (int i = 0; i < playerCount; i++) {
-      String uid = String.valueOf(playerParts[i*3]);
-      String name = playerParts[i*3 + 1];
-      int chips = Integer.parseInt(playerParts[i*3 + 2]);
-      players.add(new Player(uid, name, chips));
-    }
-    setNextPlayers();
-    
-    // Set the button.
-    button = getPlayer(String.valueOf(parts[1]));
-  }
   
   /**
    * Resets member variables for a new hand.

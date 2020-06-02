@@ -38,6 +38,7 @@ public class Player {
   // True if this player has folded.
   private boolean isFolded;
   // The next player in the direction of play (clockwise).
+  @JsonIgnore
   private Player nextPlayer;
   // True if this player is ready for a new hand.
   private boolean isReady;
