@@ -53,7 +53,7 @@
     <div v-if="table.stateDescription">State Description: {{ table.stateDescription }}</div>
     <div v-if="table.started">Started: {{ table.started }}</div>
     <div v-if="table.winDueToFolding">Win Due To Folding</div>
-    <div v-if="table.winningCards.length > 0">
+    <div v-if="table.winningCards && table.winningCards.length > 0">
       Winning Cards:
       <PokerCard :card="card" v-for="card in table.winningCards" :key="card.rank + card.suit" />
     </div>
