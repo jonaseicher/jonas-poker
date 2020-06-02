@@ -39,9 +39,6 @@ public class TexasHoldemGame {
   private int pot;
   // The amount of chips needed to call in a round of betting.
   private int toCallAmount;
-  // True if we are hosting (ground truth for the simulation), vs acting as a
-  // guest or observer.
-  private boolean isHost;
   // The players that we are to deal in on the next hand.
   private List<Player> newHandPlayers;
 
@@ -254,29 +251,21 @@ public class TexasHoldemGame {
   }
     
   public void leaveTable(String playerId) {
-    if (isHost) {
-      Player player = getPlayer(playerId);
-      if (player != null) {
-        players.remove(player);
-        setNextPlayers();
-        // TODO: return player bets.
-        dealNewHand();
-      }
+    Player player = getPlayer(playerId);
+    if (player != null) {
+      players.remove(player);
+      setNextPlayers();
+      // TODO: return player bets.
+      dealNewHand();
     }
   }
-
-  // public void newHand(String playerId) {
-  //  if (!isHost) {
-  //     setNewHand(message.getNumber(), message.getData());
-  //   }
-  // }
       
   public void requestNewHand(String playerId) {
     if (!isStarted() || state == State.HAND_DONE) {
       Player player = getPlayer(playerId);
       if (player != null) {
         player.setReady(true);
-        if (isHost && isAllPlayersReadyToStart()) {
+        if (isAllPlayersReadyToStart()) {
           dealNewHand();
         }
       }
@@ -287,11 +276,6 @@ public class TexasHoldemGame {
    * Starts a new hand of poker.
    */
   public void dealNewHand() {
-    if (!isHost) {
-      System.out.println(LOG_TAG + " Trying to deal a new hand, but not the host player.");
-      // return;
-    }
-    
     cleanupHand();
     
     // Add any new players.

@@ -26,6 +26,12 @@ public class SimplePokerRestController {
     game.joinTable(playerName);
 		return game;
   }
+
+  @GetMapping("/poker/game/leave")
+	public TexasHoldemGame leaveGame(@RequestParam String playerName) {
+    game.leaveTable(playerName);
+		return game;
+  }
   
   @GetMapping("/poker/game/reset")
 	public TexasHoldemGame reset() {    
