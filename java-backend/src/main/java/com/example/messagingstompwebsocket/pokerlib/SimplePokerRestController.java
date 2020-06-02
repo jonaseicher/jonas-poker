@@ -1,5 +1,7 @@
 package com.example.messagingstompwebsocket.pokerlib;
 
+import com.example.messagingstompwebsocket.pokerlib.TexasHoldemGame.ActionType;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,14 +24,14 @@ public class SimplePokerRestController {
   }
 
 	@GetMapping("/poker/game/join")
-	public TexasHoldemGame joinGame(@RequestParam String playerName) {
-    game.joinTable(playerName);
+	public TexasHoldemGame joinGame(@RequestParam String playerId) {
+    game.joinTable(playerId);
 		return game;
   }
 
   @GetMapping("/poker/game/leave")
-	public TexasHoldemGame leaveGame(@RequestParam String playerName) {
-    game.leaveTable(playerName);
+	public TexasHoldemGame leaveGame(@RequestParam String playerId) {
+    game.leaveTable(playerId);
 		return game;
   }
   
@@ -38,11 +40,22 @@ public class SimplePokerRestController {
     game = new TexasHoldemGame();
 		return game;
   }
-
   
 	@GetMapping("/poker/game/start")
 	public TexasHoldemGame startGame() {
     game.dealNewHand();
+		return game;
+  }
+
+	@GetMapping("/poker/game/bet")
+	public TexasHoldemGame bet(@RequestParam String playerId, @RequestParam int amount) {
+    game.bet(playerId, amount);
+		return game;
+  }
+  
+	@GetMapping("/poker/game/fold")
+	public TexasHoldemGame fold(@RequestParam String playerId) {
+    game.fold(playerId);
 		return game;
   }
 

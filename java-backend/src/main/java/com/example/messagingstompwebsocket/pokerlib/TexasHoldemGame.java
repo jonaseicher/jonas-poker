@@ -55,12 +55,6 @@ public class TexasHoldemGame {
     NONE, BET_1, BET_2, BET_3, BET_4, HAND_DONE
   }
 
-  public enum ActionType {
-    NONE,
-    FOLD,
-    BET
-  }
-
   private static final int BUY_IN_CHIPS = 20;
   private static final int SMALL_BLIND = 1;
   private static final int BIG_BLIND = 2;
@@ -188,43 +182,37 @@ public class TexasHoldemGame {
     return Math.max(BIG_BLIND, getToCallAmount() * 2 + getPotContribution());
   }
   
+  public boolean isCurrentActor(String playerId) {
+    return actor != null && actor.getId().equals(playerId);
+  }
  
-  public void act(String playerId, ActionType action, int amount) {
-    // Check that the player sending the message is the current player to act.
-    if (actor != null && actor.getId().equals(playerId)) {
-      switch (action) {
-        case NONE:
-        // Should not happen. Treat as fold.
-        System.out.println(LOG_TAG + " Got PLAYER_ACTION message, but action type is NONE.");
-        case FOLD:
-        if (actor.getBet() < toCallAmount && actor.getBet() < actor.getMaxBet()) {
-          actor.fold();
-        }
-        continueGame();
-        break;
-        case BET:
-        if (amount > toCallAmount) {
-          // Bet or raise.
-          lastRaised = actor;
-          toCallAmount = amount;
-          actor.setBet(amount);
-        } else if (amount < toCallAmount && actor.getMaxBet() > amount) {
-          // Illegal action. Player did not bet at least the call amount
-          // and has more chips (so not going all-in). Treat as fold.
-          System.out.println(LOG_TAG + " Player BET is less than the call amount.");
-          actor.fold();
-        } else {
-          // Check or call.
-          actor.setBet(amount);
-        }
-        continueGame();
-        break;
-      }
-    } else {
-      System.out.println(LOG_TAG + " Got PLAYER_ACTION message from an unexpected player = " +
-      playerId + ", not the actor = " +
-      (actor == null ? "NONE" : actor.getId()));
+  public void fold(String playerId) {
+    if (!isCurrentActor(playerId)) throw new IllegalArgumentException(playerId + " is not the current Actor. Current Actor: " + actor);
+    
+    if (actor.getBet() < toCallAmount && actor.getBet() < actor.getMaxBet()) {
+      actor.fold();
     }
+    continueGame();
+  }
+  
+  public void bet(String playerId, int amount) {
+    if (!isCurrentActor(playerId)) throw new IllegalArgumentException(playerId + " is not the current Actor. Current Actor: " + actor);
+    
+    if (amount > toCallAmount) {
+      // Bet or raise.
+      lastRaised = actor;
+      toCallAmount = amount;
+      actor.setBet(amount);
+    } else if (amount < toCallAmount && actor.getMaxBet() > amount) {
+      // Illegal action. Player did not bet at least the call amount
+      // and has more chips (so not going all-in). Treat as fold.
+      System.out.println(LOG_TAG + " Player BET is less than the call amount.");
+      actor.fold();
+    } else {
+      // Check or call.
+      actor.setBet(amount);
+    }
+    continueGame();
   }
   
   public void joinTable(String playerId) {
