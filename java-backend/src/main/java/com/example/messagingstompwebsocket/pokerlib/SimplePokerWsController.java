@@ -1,6 +1,7 @@
 package com.example.messagingstompwebsocket.pokerlib;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,42 +17,49 @@ public class SimplePokerWsController {
     game = new TexasHoldemGame();
   }
 
-	@GetMapping("/poker/game")
+	@MessageMapping("/poker/game")
+	@SendTo("/queue/pokertable")
 	public TexasHoldemGame getGame() {
 		return game;
   }
 
-	@GetMapping("/poker/game/join")
+  @MessageMapping("/poker/game/join")
+  @SendTo("/queue/pokertable")
 	public TexasHoldemGame joinGame(@RequestParam String playerId) {
     game.joinTable(playerId);
 		return game;
   }
 
-  @GetMapping("/poker/game/leave")
+  @MessageMapping("/poker/game/leave")
+  @SendTo("/queue/pokertable")
 	public TexasHoldemGame leaveGame(@RequestParam String playerId) {
     game.leaveTable(playerId);
 		return game;
   }
   
-  @GetMapping("/poker/game/reset")
+  @MessageMapping("/poker/game/reset")
+  @SendTo("/queue/pokertable")
 	public TexasHoldemGame reset() {    
     game = new TexasHoldemGame();
 		return game;
   }
   
-	@GetMapping("/poker/game/start")
+	@MessageMapping("/poker/game/start")
+	@SendTo("/queue/pokertable")
 	public TexasHoldemGame startGame() {
     game.dealNewHand();
 		return game;
   }
 
-	@GetMapping("/poker/game/bet")
+	@MessageMapping("/poker/game/bet")
+	@SendTo("/queue/pokertable")
 	public TexasHoldemGame bet(@RequestParam String playerId, @RequestParam int amount) {
     game.bet(playerId, amount);
 		return game;
   }
   
-	@GetMapping("/poker/game/fold")
+	@MessageMapping("/poker/game/fold")
+	@SendTo("/queue/pokertable")
 	public TexasHoldemGame fold(@RequestParam String playerId) {
     game.fold(playerId);
 		return game;

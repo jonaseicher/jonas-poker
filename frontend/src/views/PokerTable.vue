@@ -1,23 +1,33 @@
 <template>
   <v-container>
-    <v-btn>Join Table</v-btn>
-    <v-btn>Deal Cards</v-btn>
-    {{ poker.pokerTable }}
+    <v-btn @click="test()">Connect + Subscribe</v-btn>
+    <v-btn @click="stomp.publish('/app/poker/game', {})">Get Game</v-btn>
+    {{ table }}
+    <!-- {{ poker.pokerTable }} -->
   </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { IMessage } from '@stomp/stompjs';
+import stompModule from '../store/StompModule';
 import pokerModule from '../store/PokerModule';
 
 @Component
 export default class PokerTable extends Vue {
-  created() {
-    pokerModule.subscribe();
+  get stomp() {
+    return stompModule;
   }
 
-  get poker() {
-    return pokerModule;
+  table: any = {};
+
+  test() {
+    stompModule.connect();
+    stompModule.subscribe({ destination: '/queue/pokertable', callback: this.updateTable });
+  }
+
+  updateTable(message: IMessage) {
+    this.table = message.body;
   }
 }
 
