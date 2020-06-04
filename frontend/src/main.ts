@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import Vuetify from 'vuetify/lib';
 import vuetify from './plugins/vuetify';
 import App from './App.vue';
 import router from './router';

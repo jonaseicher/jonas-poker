@@ -27,7 +27,10 @@ export const useAuth0 = ({
         loading: true,
         isAuthenticated: false,
         user: {},
-        auth0Client: new Auth0Client({ domain: '', client_id: '' }),
+        auth0Client: new Auth0Client({ 
+          domain: 'dev-3lnv-vrr.eu.auth0.com',
+          client_id: '9wQDflrHGcuj5KuLvj2KMndatmz7bpLc'
+        }),
         popupOpen: false,
         error: null,
         claims: {},
