@@ -6,12 +6,15 @@
         <span v-if="card.rank == 11">D</span>
         <span v-if="card.rank == 10">B</span>
         <span v-if="!card.faceCard">{{ card.rank + 1 }}</span>
-        <span class="pl-4" v-if="card.suit === 'SPADE'" style="color: rgb(138, 138, 138);">{{ card.suit }}</span>
+        <!-- <span class="pl-4" v-if="card.suit === 'SPADE'" style="color: rgb(138, 138, 138);">{{ card.suit }}</span>
         <span class="pl-4" v-if="card.suit === 'HEART'" style="color: rgb(232, 0, 0);">{{ card.suit }}</span>
         <span class="pl-4" v-if="card.suit === 'DIAMOND'" style="color: rgb(232, 90, 0);">{{ card.suit }}</span>
-        <span class="pl-4" v-if="card.suit === 'CLUB'" style="color: rgb(90, 140, 150);">{{ card.suit }}</span>
+        <span class="pl-4" v-if="card.suit === 'CLUB'" style="color: rgb(90, 140, 150);">{{ card.suit }}</span> -->
       </v-card-content>
-    <v-icon color="red">mdi-heart</v-icon>
+    <v-icon style="color: rgb(138, 138, 138);" v-if="card.suit === 'SPADE'">mdi-cards-spade</v-icon>
+    <v-icon style="color: rgb(232, 0, 0);" v-if="card.suit === 'HEART'">mdi-heart</v-icon>
+    <v-icon style="color: rgb(232, 90, 0);" v-if="card.suit === 'DIAMOND'">mdi-cards-diamond</v-icon>
+    <v-icon style="color: rgb(90, 140, 150);" v-if="card.suit === 'CLUB'" >mdi-cards-club</v-icon>
   </v-card>
 </template>
 
@@ -31,7 +34,7 @@ export default class PokerCard extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-div {
-  color: gray;
+span {
+  font-size: 150%;
 }
 </style>

@@ -19,7 +19,7 @@ public class TableController {
 	@MessageMapping("/lobby/tables")
 	@SendTo("/lobby/tables")
 	public List<TexasHoldemGame> tables(JwtAuthenticationToken token) {
-		return pokerService.games;
+		return pokerService.tables;
 	}
 	
 }

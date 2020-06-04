@@ -31,6 +31,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import stompModule from '../store/StompModule';
+import pokerModule from '../store/PokerModule';
 
 
 @Component
@@ -50,8 +51,13 @@ export default class TableLobby extends Vue {
     // { text: 'Game Over', value: 'gameOver' },
   ];
 
-  joinTable(item: any) {
-    console.log('join table');
+  joinTable(table: any) {
+    // stompModule.subscribe({
+    //   destination: `/queue/pokertable/${table.tableName}`,
+    //   callback: (message) => console.log('Message for table ', table.tableName, message.body),
+    // });
+    console.log('Joining Table:', table.tableName);
+    this.$router.push({ path: `/table/${table.tableName}` });
   }
 
   created() {

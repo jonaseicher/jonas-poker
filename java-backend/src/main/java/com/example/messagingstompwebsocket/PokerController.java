@@ -48,19 +48,6 @@ public class PokerController {
 	// 	return chatMessage;
 	// }
 
-	//////////////// Join a poker table
-
-	@MessageMapping("/join/table")
-	@SendTo("/join/table")
-	public TexasHoldemGame joinTable(@Payload String tableName, Principal user) throws Exception {
-		String playerName = "Player-" + String.valueOf(Math.random()).substring(3,8);
-		if (user != null && user.getName() != null) {
-			playerName = user.getName();
-		}
-		return pokerService.joinTable(tableName, playerName);		
-	}
-
-
 
 	//////////////// Deal cards to each player.
 	

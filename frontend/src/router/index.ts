@@ -21,7 +21,8 @@ const routes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "table" */ '../views/TableLobby.vue'),
   },
   {
-    path: '/table',
+    path: '/table/:tableName',
+    props: true,
     name: 'PokerTable',
     component: () => import(/* webpackChunkName: "table" */ '../views/PokerTable.vue'),
   },

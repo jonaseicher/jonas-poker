@@ -242,9 +242,11 @@ public class TexasHoldemGame {
     Player player = getPlayer(playerId);
     if (player != null) {
       players.remove(player);
-      setNextPlayers();
       // TODO: return player bets.
-      dealNewHand();
+      if (players.size() > 1) {
+        setNextPlayers();
+        dealNewHand();
+      }
     }
   }
       

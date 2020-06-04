@@ -7,38 +7,34 @@ import com.example.messagingstompwebsocket.pokerlib.TexasHoldemGame;
 
 import org.springframework.stereotype.Service;
 
+import lombok.Getter;
+
 @Service
 public class PokerService {
 
-  List<TexasHoldemGame> games = new ArrayList<>();
+  @Getter
+  List<TexasHoldemGame> tables = new ArrayList<>();
 
   public PokerService() {
-    TexasHoldemGame game1 = new TexasHoldemGame();
-    game1.setTableName("Beginners Table");
-    this.games.add(game1);
-    TexasHoldemGame game2 = new TexasHoldemGame();
-    game2.setTableName("Table-1337");
-    this.games.add(game2);
-    TexasHoldemGame game3 = new TexasHoldemGame();
-    game3.setTableName("PrOz 0nlY!");
-    this.games.add(game3);
-    TexasHoldemGame game4 = new TexasHoldemGame();
-    game4.setTableName("ALL YOUR BASE");
-    this.games.add(game4);
+    TexasHoldemGame table1 = new TexasHoldemGame();
+    table1.setTableName("Beginners Table");
+    this.tables.add(table1);
+    TexasHoldemGame table2 = new TexasHoldemGame();
+    table2.setTableName("Table-1337");
+    this.tables.add(table2);
+    TexasHoldemGame table3 = new TexasHoldemGame();
+    table3.setTableName("PrOz 0nlY!");
+    this.tables.add(table3);
+    TexasHoldemGame table4 = new TexasHoldemGame();
+    table4.setTableName("ALL YOUR BASE");
+    this.tables.add(table4);
   }
 
-	public TexasHoldemGame joinTable(String tableName, String playerName) {
-    for (TexasHoldemGame game: this.games) {
-      if (game.getTableName().equals(tableName)) {
-        // TODO check and add player
-        return game;
-      }
-    } 
-    TexasHoldemGame newGame = new TexasHoldemGame();
-    newGame.setTableName(tableName);
-    games.add(newGame);
-    // newGame.getPlayers().add(e) add player
-    return newGame;
+  public TexasHoldemGame getTable(String tableName) {
+    for (TexasHoldemGame table: tables) {
+      if (table.getTableName().equals(tableName)) return table;
+    }
+    return null;
   }
-  
+
 }

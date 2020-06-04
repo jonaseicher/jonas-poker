@@ -1,25 +1,25 @@
 <template>
   <v-container>
-    <v-btn @click="test()">Connect + Subscribe</v-btn>
-    <v-btn @click="stomp.publish('/app/poker/game', {})">Get Game</v-btn>
-    <v-btn @click="stomp.publish('/app/poker/game/reset', {})">Reset</v-btn>
-    <v-btn @click="stomp.publishString('/app/poker/game/newhand', player)">New Hand</v-btn>
+    <v-btn @click="stomp.publishString('/app/poker/game', table.tableName)">Get Game</v-btn>
+    <v-btn @click="stomp.publishString('/app/poker/game/join', table.tableName)">Join</v-btn>
+    <v-btn @click="stomp.publishString('/app/poker/game/reset', table.tableName)">Reset</v-btn>
+    <v-btn @click="stomp.publishString('/app/poker/game/newhand', table.tableName)">New Hand</v-btn>
     <v-row>
-      <v-col v-for="player in players" :key="player">
-        <div>{{ player }}</div>
-        <v-btn @click="stomp.publishString('/app/poker/game/join', player)">Join</v-btn>
-        <v-btn @click="stomp.publishString('/app/poker/game/leave', player)">Leave</v-btn>
-        <v-btn @click="stomp.publish('/app/poker/game/bet', { playerId: player, amount: 2 })">Bet</v-btn>
+      <v-col v-for="player in table.players" :key="player.name">
+        <div>{{ player.name }}</div>
+        <v-btn @click="stomp.publishString('/app/poker/game/leave', table.tableName)">Leave</v-btn>
+        <v-btn @click="stomp.publish('/app/poker/game/bet', { tableName: table.tableName, amount: 2 })">Bet</v-btn>
         <!-- <v-btn @click="stomp.publish('/app/poker/game/bet', player, 2)">Bet</v-btn> -->
-        <v-btn @click="stomp.publishString('/app/poker/game/fold', player)">Fold</v-btn>
+        <v-btn @click="stomp.publishString('/app/poker/game/fold', table.tableName)">Fold</v-btn>
       </v-col>
     </v-row>
     <v-row>
       <v-col v-for="p in table.players" v-bind:key="p.name">
         <div>{{ p.name }}, Chips: {{ p.chips }}</div>
-        <v-row>
+        <!-- Reveal cards only to the owner or if hand is done and wasn't won by folding -->
+        <v-row v-if="p.name === stomp.idToken.name || (table.state === 'HAND_DONE' && !table.winDueToFolding)">
           <v-col v-for="card in p.pocketCards"  :key="card.rank + card.suit">
-          <PokerCard :card="card"  />
+            <PokerCard :card="card" />
           </v-col>
         </v-row>
         <div v-if="p.bet">Bet: {{ p.bet }}</div>
@@ -59,12 +59,11 @@
     </div>
     <v-divider></v-divider>
     {{ table }}
-    <!-- {{ poker.pokerTable }} -->
   </v-container>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Prop } from 'vue-property-decorator';
 import { IMessage } from '@stomp/stompjs';
 import PokerCard from './PokerCard.vue';
 import stompModule from '../store/StompModule';
@@ -76,27 +75,26 @@ import pokerModule from '../store/PokerModule';
   },
 })
 export default class PokerTable extends Vue {
+  @Prop()
+  tableName!: string;
+
   get stomp() {
     return stompModule;
   }
 
-  players = ['Jonas', 'Mitch', 'Krischna', 'Jenny', 'Michael'];
-
   table: any = {};
 
-  test() {
-    stompModule.connect();
-    stompModule.subscribe({ destination: '/queue/pokertable', callback: this.updateTable });
+  created() {
+    stompModule.subscribe({ destination: `/queue/pokertable/${this.tableName}`, callback: this.updateTable });
+    stompModule.publishString('/app/poker/game/join', this.tableName);
   }
 
   updateTable(message: IMessage) {
     this.table = JSON.parse(message.body);
-    console.log(this.table.players);
   }
 }
 
 </script>
 
 <style scoped>
-
 </style>

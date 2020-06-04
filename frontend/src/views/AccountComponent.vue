@@ -1,7 +1,9 @@
 <template>
   <div>
     <v-icon v-if="stomp.connected">mdi-link</v-icon>
-    <v-icon v-else>mdi-link-off</v-icon>
+    <v-btn v-else @click="stomp.connect()">
+      <v-icon>mdi-link-off</v-icon>
+    </v-btn>
     <v-menu v-if="auth.isAuthenticated" offset-y>
       <template v-slot:activator="{ on }">
         <v-btn v-on="on">
