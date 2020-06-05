@@ -19,7 +19,8 @@ class StompModule extends VuexModule {
   idToken: IdToken = { __raw: '' };
 
   stompClient = new Client({
-    brokerURL: 'ws://127.0.0.1:9090/stomp', // spring-boot-backend (local)
+    // brokerURL: 'ws://127.0.0.1:9090/stomp', // spring-boot-backend (local)
+    brokerURL: `wss://${window.location.host}/stomp`, // will it work in heroku?
     // brokerURL: 'ws://35.158.11.245:9090/stomp', // spring-boot-backend-service (aws)
     // brokerURL: 'ws://localhost:61614/stomp', // node-backend
     connectHeaders: {

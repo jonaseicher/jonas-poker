@@ -11,6 +11,11 @@ This will serve on localhost:8180 and use the backend at localhost:9090, which y
     cd frontend
     npm run serve
 
+# Heroku
+The Procfile contains the command for starting the spring boot app (which contains the frontend).
+
+    git push heroku master
+
 # TODO
 
 github actions to build and push to heroku
