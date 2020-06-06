@@ -10,16 +10,17 @@
   <v-img
     width="300px"
     height="226px"
-    src="/stack.jpg"
+    src="./stack.jpg"
+    position="left"
   >
-    <v-card-title class="pb-7">
+    <v-card-title>
       <span v-if="isActor" class="title mr-auto bounce">{{ player.name }}</span>
       <span v-else class="title mr-auto">{{ player.name }}</span>
       <v-img v-if="player.picture" :src="player.picture" max-width="54px"></v-img>
       <!-- <v-icon v-else large left>mdi-account</v-icon> -->
     </v-card-title>
     <v-card-text>
-      <v-row>
+      <v-row class="pt-3">
         <v-chip color="grey darken-4" label large class="headline ml-1">
           <span>
             <v-icon large left>mdi-cash-usd</v-icon>
@@ -135,6 +136,11 @@ export default class PlayerCard extends Vue {
 .v-image {
   border-radius: 25px;
 }
+
+.v-card__title {
+  background-color:rgba(0, 0, 0, 0.5)
+}
+
 .bounce {
   animation: bounce 0.5s;
   animation-iteration-count: infinite;
@@ -148,6 +154,7 @@ export default class PlayerCard extends Vue {
   80% { transform: translate(0px, 2px); }
   100% { transform: translate(0px, 0px); }
 }
+
 .itsMe {
   box-shadow: 0px 0px 16px, rgba(0, 0, 0, 0.75);
 }
