@@ -20,7 +20,7 @@ class StompModule extends VuexModule {
 
   stompClient = new Client({
     // brokerURL: 'ws://127.0.0.1:9090/stomp', // spring-boot-backend (local)
-    brokerURL: `wss://${window.location.host}/stomp`, // will it work in heroku?
+    brokerURL: process.env.VUE_APP_STOMP_BROKER_URL || `wss://${window.location.host}/stomp`, // will it work in heroku? yes it does!
     // brokerURL: 'ws://35.158.11.245:9090/stomp', // spring-boot-backend-service (aws)
     // brokerURL: 'ws://localhost:61614/stomp', // node-backend
     connectHeaders: {
@@ -56,6 +56,7 @@ class StompModule extends VuexModule {
 
   @Action
   connect() {
+    console.log(process.env);
     this.setConnectHandler();
     this.setDisconnectHandler();
     this.stompClient.connectHeaders = {
