@@ -17,9 +17,9 @@
       <span v-if="isActor" class="title mr-auto bounce">{{ player.name }}</span>
       <span v-else class="title mr-auto">{{ player.name }}</span>
       <v-img v-if="player.picture" :src="player.picture" max-width="54px"></v-img>
-      <v-tooltip bottom>
+      <v-tooltip bottom v-if="isDealer">
         <template v-slot:activator="{ on }">
-          <v-icon large v-if="isDealer" v-on="on">mdi-alpha-d-circle</v-icon>
+          <v-icon large v-on="on">mdi-alpha-d-circle</v-icon>
         </template>
         <span>This player is the dealer</span>
       </v-tooltip>
