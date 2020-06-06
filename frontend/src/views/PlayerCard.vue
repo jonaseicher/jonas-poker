@@ -5,10 +5,10 @@
   <v-card
     v-if="player"
     :class="cardClass"
-    max-width="300"
+    max-width="320"
   >
   <v-img
-    width="300px"
+    width="320px"
     height="226px"
     src="./stack.jpg"
     position="left"
@@ -17,20 +17,31 @@
       <span v-if="isActor" class="title mr-auto bounce">{{ player.name }}</span>
       <span v-else class="title mr-auto">{{ player.name }}</span>
       <v-img v-if="player.picture" :src="player.picture" max-width="54px"></v-img>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-icon large v-if="isDealer" v-on="on">mdi-alpha-d-circle</v-icon>
+        </template>
+        <span>This player is the dealer</span>
+      </v-tooltip>
       <!-- <v-icon v-else large left>mdi-account</v-icon> -->
     </v-card-title>
     <v-card-text>
       <v-row class="pt-3">
-        <v-chip color="grey darken-4" label large class="headline ml-1">
-          <span>
-            <v-icon large left>mdi-cash-usd</v-icon>
-          </span>
-          <span>{{ player.chips }}</span>
-        </v-chip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-chip color="grey darken-4" v-on="on" label large class="headline ml-1">
+              <span>
+                <v-icon large left>mdi-cash-usd</v-icon>
+              </span>
+              <span>{{ player.chips }}</span>
+            </v-chip>
+          </template>
+          <span>The players total remainining chips</span>
+        </v-tooltip>
         <v-slider
         v-if="isMe"
         v-model="sliderBet"
-        :min="(poker.table.toRaiseAmount - player.bet)"
+        :min="sliderMin"
         :max="player.maxBet - player.bet"
         thumb-label="always"
         color="grey darken-4"
@@ -69,12 +80,43 @@
   >
     <div v-for="card in player.pocketCards"
       :key="card.rank + card.suit"
-      class="ma-1"
     >
       <PokerCard  v-if="isMe || (poker.table.state === 'HAND_DONE' && !poker.table.winDueToFolding)" :card="card" />
       <PokerCard  v-else :card="{ rank: -1, suit: 'COVER' }" />
     </div>
-    <span v-if="player.folded">FOLDED</span>
+    <span
+      v-if="player.folded"
+      class="ml-auto"
+    >
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-chip color="grey darken-4" v-on="on" label large class="headline ma-1">
+            <!-- <span>
+              <v-icon large class="mr-2">mdi-cash-usd</v-icon>
+            </span> -->
+            <span>FOLDED</span>
+          </v-chip>
+        </template>
+        <span>This player has folded his cards and is out of the game</span>
+      </v-tooltip>
+    </span>
+
+    <span
+      v-if="player.bet > 0"
+      class="ml-auto"
+    >
+      <v-tooltip  bottom>
+        <template v-slot:activator="{ on }">
+          <v-chip color="grey darken-4" v-on="on" label large class="headline ma-1">
+            <span>
+              <v-icon large class="mr-2">mdi-cash-usd</v-icon>
+            </span>
+            <span>{{ player.bet }}</span>
+          </v-chip>
+        </template>
+        <span>The players current bet</span>
+      </v-tooltip>
+    </span>
   </v-row>
   </v-col>
 </v-row>
@@ -127,6 +169,14 @@ export default class PlayerCard extends Vue {
     }
     return cardClass;
   }
+
+  get sliderMin() {
+    if (pokerModule.table.toCallAmount > this.player.bet) {
+      console.log('Can only raise: ', pokerModule.table.toRaiseAmount);
+      return pokerModule.table.toCallAmount * 2;
+    }
+    return 2;
+  }
 }
 
 </script>
@@ -156,6 +206,6 @@ export default class PlayerCard extends Vue {
 }
 
 .itsMe {
-  box-shadow: 0px 0px 16px, rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 16px rgba(255, 255, 255, 0.7);
 }
 </style>

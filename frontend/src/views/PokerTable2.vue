@@ -1,8 +1,6 @@
 <template>
   <v-container>
-    <v-btn @click="poker.reset(tableName)">Reset</v-btn>
-    <v-btn @click="poker.join(tableName)">Join</v-btn>
-    <v-btn @click="poker.newHand(tableName)">New Hand</v-btn>
+    <v-btn @click="poker.newHand(tableName)" :disabled="!isHandDone">New Hand</v-btn>
     <v-row>
       <v-col v-for="p in poker.table.players" v-bind:key="p.name">
         <PlayerCard :player="p" :table="poker.table" />
@@ -35,6 +33,8 @@
       Winning Cards:
       <PokerCard :card="card" v-for="card in poker.table.winningCards" :key="card.rank + card.suit" />
     </div>
+    <v-btn @click="poker.reset(tableName)">Reset Table</v-btn>
+    <v-btn @click="poker.join(tableName)">Join Table</v-btn>
   </v-container>
 </template>
 
@@ -62,6 +62,11 @@ export default class PokerTable2 extends Vue {
 
   created() {
     pokerModule.subscribe(this.tableName);
+  }
+
+  get isHandDone() {
+    console.log(pokerModule.table.state);
+    return pokerModule.table.state === 'HAND_DONE';
   }
 }
 

@@ -65,22 +65,26 @@ import stompModule from '../store/StompModule';
 })
 export default class Dashboard extends Vue {
   todos = [
-    { title: 'Restict New Hand usage', description: 'Only allow new hand when game state = HAND_DONE' },
-    { title: 'Cleanup', description: 'Hide debug stuff (json, unused tabs, etc)' },
     { title: 'Highlight best/winning hand', description: 'Highlight combination of pocket/table that make up each players best hand' },
     { title: 'All-in mode', description: 'Detect All-ins and reveal pockets, then deal remaining cards.' },
-    { title: 'Copy assets to heroku', description: 'Assets are not deployed to heroku in the current build. Change that.' },
     { title: 'Retain Poker-Table', description: 'Store joined poker-table in vuex and load it when player clicks on "Poker" nav item.' },
+    { title: 'Join Table only once', description: 'Currently, players are only prevented from joining the table when they are already on it, but not when they are in a waiting position.' },
     { title: 'Show waiting players', description: 'Show players who joined while a hand is in progress as waiting.' },
     { title: 'Fix connection', description: 'Connection state management is a bit wonky (requires manual logout/login when token expires)' },
     { title: 'Sound Effects', description: 'Add sound effects for New Hand, Bet, call, raise, fold, join/leave, your turn' },
     { title: 'Visual Effects', description: 'Add visual effects for New Hand, Bet, call, raise, fold, join/leave, your turn' },
-    { title: 'Refund chips when forcing new hand', description: '' },
     { title: 'Reveal cards', description: 'Allow players to reveal their cards voluntarily after game conclusion' },
     { title: 'Dealer Mode', description: 'Dealer can interactively deal the cards, for example with drag & drop, then click to reveal them' },
+    { title: 'Preflop Bet', description: 'In preflop, the big blind can "bet 2", which is the same as check, because his bet is already at 2. Fix it.' },
+    { title: 'Create Table', description: 'Players can create new tables and set the blinds and starting chips.' },
+    { title: 'Delete Table', description: 'Players can delete empty tables.' },
+    { title: 'Refund chips when forcing new hand', description: '' },
     { done: true, title: 'Player Controls', description: 'Make player-controls with name, picture, chips, blind/dealer button, pocket cards, actions. Highlight when its this players turn.' },
     { done: true, title: 'Custom bets and raises', description: 'Players can choose how much money to bet or raise (within the limits)' },
     { done: true, title: 'Nice playing-cards', description: 'Make playing cards look nice' },
+    { done: true, title: 'Restict New Hand usage', description: 'Only allow new hand when game state = HAND_DONE' },
+    { done: true, title: 'Cleanup', description: 'Hide debug stuff (json, unused tabs, etc)' },
+    { done: true, title: 'Copy assets to heroku', description: 'Assets are not deployed to heroku in the current build. Change that.' },
   ];
 
   table = {
