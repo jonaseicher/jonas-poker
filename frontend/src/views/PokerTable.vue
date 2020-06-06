@@ -66,12 +66,14 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import { IMessage } from '@stomp/stompjs';
 import PokerCard from './PokerCard.vue';
+import PlayerCard from './PlayerCard.vue';
 import stompModule from '../store/StompModule';
 import pokerModule from '../store/PokerModule';
 
 @Component({
   components: {
     PokerCard,
+    PlayerCard,
   },
 })
 export default class PokerTable extends Vue {

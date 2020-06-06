@@ -1,21 +1,16 @@
 <template>
-  <v-card>
-      <v-card-content>
-        <span v-if="card.rank == 0">A</span>
-        <span v-if="card.rank == 12">K</span>
-        <span v-if="card.rank == 11">D</span>
-        <span v-if="card.rank == 10">B</span>
-        <span v-if="!card.faceCard">{{ card.rank + 1 }}</span>
-        <!-- <span class="pl-4" v-if="card.suit === 'SPADE'" style="color: rgb(138, 138, 138);">{{ card.suit }}</span>
-        <span class="pl-4" v-if="card.suit === 'HEART'" style="color: rgb(232, 0, 0);">{{ card.suit }}</span>
-        <span class="pl-4" v-if="card.suit === 'DIAMOND'" style="color: rgb(232, 90, 0);">{{ card.suit }}</span>
-        <span class="pl-4" v-if="card.suit === 'CLUB'" style="color: rgb(90, 140, 150);">{{ card.suit }}</span> -->
-      </v-card-content>
-    <v-icon style="color: rgb(138, 138, 138);" v-if="card.suit === 'SPADE'">mdi-cards-spade</v-icon>
+  <v-chip large label color="grey lighten-4" class="ma-1">
+    <strong v-if="card.rank == 0">A</strong>
+    <strong v-if="card.rank == 12">K</strong>
+    <strong v-if="card.rank == 11">D</strong>
+    <strong v-if="card.rank == 10">B</strong>
+    <strong v-if="card.rank < 10 && card.rank > 0">{{ card.rank + 1 }}</strong>
+    <v-icon style="color: black;" v-if="card.suit === 'SPADE'">mdi-cards-spade</v-icon>
     <v-icon style="color: rgb(232, 0, 0);" v-if="card.suit === 'HEART'">mdi-heart</v-icon>
-    <v-icon style="color: rgb(232, 90, 0);" v-if="card.suit === 'DIAMOND'">mdi-cards-diamond</v-icon>
-    <v-icon style="color: rgb(90, 140, 150);" v-if="card.suit === 'CLUB'" >mdi-cards-club</v-icon>
-  </v-card>
+    <v-icon style="color: rgb(202, 80, 0);" v-if="card.suit === 'DIAMOND'">mdi-cards-diamond</v-icon>
+    <v-icon style="color: rgb(0, 100, 110);" v-if="card.suit === 'CLUB'" >mdi-cards-club</v-icon>
+    <v-icon style="color: rgb(100, 140, 150);" v-if="card.suit === 'COVER'" >mdi-cards</v-icon>
+  </v-chip>
 </template>
 
 <script lang="ts">
@@ -34,7 +29,12 @@ export default class PokerCard extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-span {
+strong {
   font-size: 150%;
+  color: black;
+}
+.v-icon {
+  /* padding-bottom: 8px; */
+  padding-left: 3px;
 }
 </style>

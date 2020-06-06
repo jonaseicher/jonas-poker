@@ -1,81 +1,53 @@
 import {
   VuexModule, Module, Action, Mutation,
 } from 'vuex-class-modules';
-import ChatMessage from '@/model/ChatMessage';
 import { IMessage } from '@stomp/stompjs';
 import stompModule from './StompModule';
 import store from './store';
 
 @Module({ generateMutationSetters: true })
 class PokerModule extends VuexModule {
-  players: any = [];
+  table: any = {};
 
-  messages: any[] = [];
+  // Table management
+  getGame() {
+    stompModule.publishString('/app/poker/game', this.table.tableName);
+  }
 
-  subscribed = false;
+  join() {
+    stompModule.publishString('/app/poker/game/join', this.table.tableName);
+  }
 
-  pokerTable: any = {};
+  reset() {
+    stompModule.publishString('/app/poker/game/reset', this.table.tableName);
+  }
 
-  chatInputMessage = '';
+  newHand() {
+    stompModule.publishString('/app/poker/game/newhand', this.table.tableName);
+  }
 
-  player = { name: `Player-${Math.floor(Math.random() * 1000)}`, id: Math.floor(Math.random() * 100000000) };
+  // Player/Hand interaction
+  leave() {
+    stompModule.publishString('/app/poker/game/leave', this.table.tableName);
+  }
 
+  bet(amount: number) {
+    stompModule.publish('/app/poker/game/bet', { tableName: this.table.tableName, amount });
+  }
 
-  @Action
-  sendChatMessage() {
-    stompModule.publish('/chat', { user: this.player.name, text: this.chatInputMessage, timestamp: Date.now() });
-    this.chatInputMessage = '';
+  fold() {
+    stompModule.publishString('/app/poker/game/fold', this.table.tableName);
   }
 
   @Action
-  changeName() {
-    stompModule.publish('/app/lobby/player/changed', this.player);
-  }
-
-  @Mutation
-  addMessage(message?: ChatMessage) {
-    if (!message) this.messages.push({ user: this.player.name, text: this.chatInputMessage });
-    else { this.messages.push(message); }
-    if (this.messages.length > 10) this.messages.shift();
-  }
-
-  @Action
-  subscribe() {
+  subscribe(tableName: string) {
     stompModule.subscribe({
-      destination: '/lobby/players',
-      callback: (message) => {
-        console.log(message);
-        this.players = JSON.parse(message.body);
+      destination: `/queue/pokertable/${tableName}`,
+      callback: (message: IMessage) => {
+        this.table = JSON.parse(message.body);
       },
     });
-    stompModule.subscribe({ destination: '/chat', callback: (message) => this.addMessage(JSON.parse(message.body)) });
-    stompModule.subscribe({ destination: '/lobby/tables', callback: (message) => console.log(message) });
-
-    this.addMessage({ user: 'Lobby', text: `Welcome to the Lobby, ${this.player.name}!` });
-
-    stompModule.publish('/app/lobby/player/new', this.player);
-
-    window.document.addEventListener('beforeunload', () => {
-      console.log('beforeDestroy called');
-      stompModule.publish('/app/lobby/player/deleted', this.player);
-    });
-
-    this.subscribed = true;
-
-    // trying the node broker
-    // stompModule.subscribe('/*', (x) => console.log(x));
-    // stompModule.subscribe('/test', (x) => console.log(x));
-
-    // this works with the spring boot broker
-    stompModule.subscribe({ destination: '/join/table', callback: this.joinTable });
-    stompModule.subscribe({ destination: '/user/queue/error', callback: (message) => console.log(message) });
-    stompModule.subscribe({ destination: '/user/queue/karten', callback: (message) => console.log(message) });
-    stompModule.subscribe({ destination: '/user/queue/cards', callback: (message) => console.log(message) });
-  }
-
-  joinTable(message: IMessage) {
-    this.pokerTable = message.body;
-    console.log('pokerTable', this.pokerTable);
+    stompModule.publishString('/app/poker/game/join', tableName);
   }
 }
 
