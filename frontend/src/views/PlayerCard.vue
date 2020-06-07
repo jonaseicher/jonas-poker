@@ -47,7 +47,14 @@
 
       <!-- PLAYER ACTIONS -->
       <v-card-actions v-if="isMe">
-        <template v-if="poker.table.toCallAmount > player.bet">
+        <template v-if="poker.table.toCallAmount >= player.chips + player.bet">
+          <v-btn :disabled="!isActor" @click="poker.bet(player.chips + player.bet)">ALL IN</v-btn>
+          <v-btn :disabled="!isActor"
+            class="ml-auto"
+            @click="poker.fold()"
+          >fold</v-btn>
+        </template>
+        <template v-else-if="poker.table.toCallAmount > player.bet">
           <v-btn :disabled="!isActor"
             @click="poker.bet(poker.table.toCallAmount)"
           >call for {{ poker.table.toCallAmount - player.bet }}

@@ -3,11 +3,9 @@ package com.example.messagingstompwebsocket.pokerlib;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents a hand of 5 cards.
- *
- * @author andyehou@gmail.com (Andy Hou)
- */
+import lombok.ToString;
+
+@ToString
 public class Hand {
   // The 5 cards that make up the hand.
   private List<Card> hand;
@@ -102,24 +100,6 @@ public class Hand {
     }
     
     return 0;
-  }
-  
-  public String toString() {
-    String s = "[";
-    for (int i = 0; i < hand.size(); i++) {
-      s += hand.get(i).toString();
-      if (i != hand.size() - 1) {
-        s += " ";
-      }
-    }
-    s += "]\n" + category + "\n[";
-    for (int i = 0; i < sortingOrders.size(); i++) {
-      s += Card.getRankChar(sortingOrders.get(i));
-      if (i != sortingOrders.size() - 1) {
-        s += " ";
-      }
-    }
-    return s + "]";
   }
   
   /**

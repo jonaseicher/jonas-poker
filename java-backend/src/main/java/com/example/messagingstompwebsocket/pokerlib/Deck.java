@@ -3,11 +3,6 @@ package com.example.messagingstompwebsocket.pokerlib;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents a deck of 52 cards (no jokers).
- *
- * @author andyehou@gmail.com (Andy Hou)
- */
 public class Deck {
   private List<Card> deck;
   

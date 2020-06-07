@@ -205,7 +205,7 @@ public class TexasHoldemGame {
       actor.setBet(amount);
     } else if (amount < toCallAmount && actor.getMaxBet() > amount) {
       // Illegal action. Player did not bet at least the call amount
-      // and has more chips (so not going all-in). Treat as fold.
+      // and has more chips (so not going all-in). Treat as fold. The frontend prevents this currently (Jonas)
       System.out.println(LOG_TAG + " Player BET is less than the call amount.");
       actor.fold();
     } else {
