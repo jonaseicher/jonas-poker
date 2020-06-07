@@ -4,11 +4,14 @@
       <PlayerCard :table="table" :player="player" class="ma-5" />
     <v-divider></v-divider>
     <v-row class="display-1 pl-5 pt-2">Poker Cards</v-row>
-      <PokerCard :card="{ rank: 11, suit: 'HEART'}" class="mx-1 my-3"/>
-      <PokerCard :card="{ rank: 0, suit: 'SPADE'}" class="mx-1 my-3"/>
-      <PokerCard :card="{ rank: 12, suit: 'CLUB'}" class="mx-1 my-3"/>
-      <PokerCard :card="{ rank: 7, suit: 'SPADE'}" class="mx-1 my-3"/>
-      <PokerCard :card="{ rank: 1, suit: 'DIAMOND'}" class="mx-1 my-3"/>
+    <PokerCard :card="{ rank: 11, suit: 'HEART'}" class="mx-1 my-3"/>
+    <PokerCard :card="{ rank: 0, suit: 'SPADE'}" class="mx-1 my-3"/>
+    <PokerCard :card="{ rank: 12, suit: 'CLUB'}" class="mx-1 my-3"/>
+    <PokerCard :card="{ rank: 7, suit: 'SPADE'}" class="mx-1 my-3"/>
+    <PokerCard :card="{ rank: 1, suit: 'DIAMOND'}" class="mx-1 my-3"/>
+    <v-divider></v-divider>
+    <v-row class="display-1 pl-5 pt-2">Cards Table</v-row>
+    <CardsTable :cards="cards" />
     <v-divider></v-divider>
     <v-row class="display-1 pl-5 pt-2">To-Do List</v-row>
     <v-divider></v-divider>
@@ -52,6 +55,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import PokerCard from './PokerCard.vue';
 import PlayerCard from './PlayerCard.vue';
+import CardsTable from './CardsTable.vue';
 import StompComponent from './StompComponent.vue';
 import chatModule from '../store/ChatModule';
 import stompModule from '../store/StompModule';
@@ -61,6 +65,7 @@ import stompModule from '../store/StompModule';
   components: {
     PokerCard,
     PlayerCard,
+    CardsTable,
   },
 })
 export default class Dashboard extends Vue {
@@ -73,6 +78,7 @@ export default class Dashboard extends Vue {
     { title: 'Fix connection', description: 'Connection state management is a bit wonky (requires manual logout/login when token expires)' },
     { title: 'Sound Effects', description: 'Add sound effects for New Hand, Bet, call, raise, fold, join/leave, your turn' },
     { title: 'Visual Effects', description: 'Add visual effects for New Hand, Bet, call, raise, fold, join/leave, your turn' },
+    { title: 'Custom Backgrounds', description: 'Allow players to choose alternate or random backgrounds and propagate that to all players (e.g. https://picsum.photos/).' },
     { title: 'Reveal cards', description: 'Allow players to reveal their cards voluntarily after game conclusion' },
     { title: 'Dealer Mode', description: 'Dealer can interactively deal the cards, for example with drag & drop, then click to reveal them' },
     { title: 'Preflop Bet', description: 'In preflop, the big blind can "bet 2", which is the same as check, because his bet is already at 2. Fix it.' },
@@ -135,6 +141,14 @@ export default class Dashboard extends Vue {
   };
 
   player = this.table.players[0];
+
+  cards = [
+    { rank: 0, suit: 'SPADE' },
+    { rank: 12, suit: 'SPADE' },
+    { rank: 11, suit: 'SPADE' },
+    { rank: 10, suit: 'SPADE' },
+    { rank: 9, suit: 'SPADE' },
+  ];
 }
 
 </script>

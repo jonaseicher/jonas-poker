@@ -5,13 +5,11 @@
   <v-card
     v-if="player"
     :class="cardClass"
-    max-width="320"
+    width="320"
   >
-  <v-img
-    width="320px"
-    height="226px"
+  <v-img id="card-background"
+    height="213px"
     src="./stack.jpg"
-    position="left"
   >
     <v-card-title>
       <span v-if="isActor" class="title mr-auto bounce">{{ player.name }}</span>
@@ -25,11 +23,11 @@
       </v-tooltip>
       <!-- <v-icon v-else large left>mdi-account</v-icon> -->
     </v-card-title>
-    <v-card-text>
+    <v-card-text class="pb-0">
       <v-row class="pt-3">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-chip color="grey darken-4" v-on="on" label large class="headline ml-1">
+            <v-chip color="rgba(0, 0, 0, 0.7)" v-on="on" label large class="headline ml-1">
               <span>
                 <v-icon large left>mdi-cash-usd</v-icon>
               </span>
@@ -45,8 +43,7 @@
         :max="player.maxBet - player.bet"
         thumb-label="always"
         color="grey darken-4"
-        class="pt-6 pl-6 pr-3"
-
+        class="pt-7 pl-6 pr-3"
         ></v-slider>
       </v-row>
     </v-card-text>
@@ -176,6 +173,14 @@ export default class PlayerCard extends Vue {
       return pokerModule.table.toCallAmount * 2;
     }
     return 2;
+  }
+
+  changeBackground() {
+    const element = document.getElementById('card-background');
+    console.log(element);
+    if (element) {
+      element.setAttribute('src', './stack');
+    }
   }
 }
 
