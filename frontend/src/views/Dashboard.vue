@@ -70,9 +70,10 @@ import stompModule from '../store/StompModule';
 })
 export default class Dashboard extends Vue {
   todos = [
-    { title: 'Highlight best/winning hand', description: 'Highlight combination of pocket/table that make up each players best hand' },
+    { title: 'Highlight best/winning hand', description: 'Highlight combination of pocket/table that make up each players best hand. Highlight winning player' },
     { title: 'All-in mode', description: 'Detect All-ins and reveal pockets, then deal remaining cards.' },
     { title: 'Retain Poker-Table', description: 'Store joined poker-table in vuex and load it when player clicks on "Poker" nav item.' },
+    { title: 'In-game Chat', description: 'Players see chat messages of other players in their game and can write them from the game.' },
     { title: 'Join Table only once', description: 'Currently, players are only prevented from joining the table when they are already on it, but not when they are in a waiting position.' },
     { title: 'Show waiting players', description: 'Show players who joined while a hand is in progress as waiting.' },
     { title: 'Fix connection', description: 'Connection state management is a bit wonky (requires manual logout/login when token expires)' },

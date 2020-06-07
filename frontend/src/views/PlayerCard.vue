@@ -1,137 +1,87 @@
 <template>
-<v-row>
-  <v-col class="flex-grow-0">
-
   <v-card
     v-if="player"
     :class="cardClass"
     width="320"
   >
-  <v-img id="card-background"
-    height="213px"
-    src="./stack.jpg"
-  >
-    <v-card-title>
-      <span v-if="isActor" class="title mr-auto bounce">{{ player.name }}</span>
-      <span v-else class="title mr-auto">{{ player.name }}</span>
-      <v-img v-if="player.picture" :src="player.picture" max-width="54px"></v-img>
-      <v-tooltip bottom v-if="isDealer">
-        <template v-slot:activator="{ on }">
-          <v-icon large v-on="on">mdi-alpha-d-circle</v-icon>
-        </template>
-        <span>This player is the dealer</span>
-      </v-tooltip>
-      <!-- <v-icon v-else large left>mdi-account</v-icon> -->
-    </v-card-title>
-    <v-card-text class="pb-0">
-      <v-row class="pt-3">
-        <v-tooltip bottom>
+    <v-img id="card-background"
+      height="213px"
+      src="./stack.jpg"
+    >
+      <v-card-title>
+        <span v-if="isActor" class="title mr-auto bounce">{{ player.name }}</span>
+        <span v-else class="title mr-auto">{{ player.name }}</span>
+        <v-img v-if="player.picture" :src="player.picture" max-width="54px"></v-img>
+        <v-tooltip bottom v-if="isDealer">
           <template v-slot:activator="{ on }">
-            <v-chip color="rgba(0, 0, 0, 0.7)" v-on="on" label large class="headline ml-1">
-              <span>
-                <v-icon large left>mdi-cash-usd</v-icon>
-              </span>
-              <span>{{ player.chips }}</span>
-            </v-chip>
+            <v-icon large v-on="on">mdi-alpha-d-circle</v-icon>
           </template>
-          <span>The players total remainining chips</span>
+          <span>This player is the dealer</span>
         </v-tooltip>
-        <v-slider
-        v-if="isMe"
-        v-model="sliderBet"
-        :min="sliderMin"
-        :max="player.maxBet - player.bet"
-        thumb-label="always"
-        color="grey darken-4"
-        class="pt-7 pl-6 pr-3"
-        ></v-slider>
-      </v-row>
-    </v-card-text>
+        <!-- <v-icon v-else large left>mdi-account</v-icon> -->
+      </v-card-title>
+      <v-card-text class="pb-0">
+        <v-row class="pt-3">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-chip color="rgba(0, 0, 0, 0.7)" v-on="on" label large class="headline ml-1">
+                <span>
+                  <v-icon large left>mdi-cash-usd</v-icon>
+                </span>
+                <span>{{ player.chips }}</span>
+              </v-chip>
+            </template>
+            <span>The players total remainining chips</span>
+          </v-tooltip>
+          <v-slider
+          v-if="isMe"
+          v-model="sliderBet"
+          :min="sliderMin"
+          :max="player.maxBet"
+          thumb-label="always"
+          color="grey darken-4"
+          class="pt-7 pl-6 pr-3"
+          ></v-slider>
+        </v-row>
+      </v-card-text>
 
-    <v-card-actions v-if="isMe">
-
-      <template v-if="poker.table.toCallAmount > player.bet">
-        <v-btn :disabled="!isActor"
-          @click="poker.bet(poker.table.toCallAmount)"
-        >call for {{ poker.table.toCallAmount - player.bet }}
-        </v-btn>
-        <v-btn :disabled="!isActor"
-          @click="poker.bet(sliderBet)"
-        >raise to {{ sliderBet }}
-        </v-btn>
-        <v-btn :disabled="!isActor"
-          class="ml-auto"
-          @click="poker.fold()"
-        >fold</v-btn>
-      </template>
-      <template v-else>
-        <v-btn :disabled="!isActor" @click="poker.fold()">check</v-btn>
-        <v-btn :disabled="!isActor" @click="poker.bet(sliderBet)">bet {{ sliderBet }}</v-btn>
-      </template>
-
-    </v-card-actions>
-  </v-img>
+      <!-- PLAYER ACTIONS -->
+      <v-card-actions v-if="isMe">
+        <template v-if="poker.table.toCallAmount > player.bet">
+          <v-btn :disabled="!isActor"
+            @click="poker.bet(poker.table.toCallAmount)"
+          >call for {{ poker.table.toCallAmount - player.bet }}
+          </v-btn>
+          <v-btn :disabled="!isActor"
+            @click="poker.bet(sliderBet)"
+          >raise to {{ sliderBet }}
+          </v-btn>
+          <v-btn :disabled="!isActor"
+            class="ml-auto"
+            @click="poker.fold()"
+          >fold</v-btn>
+        </template>
+        <template v-else>
+          <v-btn :disabled="!isActor" @click="poker.fold()">check</v-btn>
+          <v-btn :disabled="!isActor" @click="poker.bet(sliderBet)">bet {{ sliderBet }}</v-btn>
+        </template>
+      </v-card-actions>
+    </v-img>
   </v-card>
-  <v-row
-    class="ma-2"
-  >
-    <div v-for="card in player.pocketCards"
-      :key="card.rank + card.suit"
-    >
-      <PokerCard  v-if="isMe || (poker.table.state === 'HAND_DONE' && !poker.table.winDueToFolding)" :card="card" />
-      <PokerCard  v-else :card="{ rank: -1, suit: 'COVER' }" />
-    </div>
-    <span
-      v-if="player.folded"
-      class="ml-auto"
-    >
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on }">
-          <v-chip color="grey darken-4" v-on="on" label large class="headline ma-1">
-            <!-- <span>
-              <v-icon large class="mr-2">mdi-cash-usd</v-icon>
-            </span> -->
-            <span>FOLDED</span>
-          </v-chip>
-        </template>
-        <span>This player has folded his cards and is out of the game</span>
-      </v-tooltip>
-    </span>
-
-    <span
-      v-if="player.bet > 0"
-      class="ml-auto"
-    >
-      <v-tooltip  bottom>
-        <template v-slot:activator="{ on }">
-          <v-chip color="grey darken-4" v-on="on" label large class="headline ma-1">
-            <span>
-              <v-icon large class="mr-2">mdi-cash-usd</v-icon>
-            </span>
-            <span>{{ player.bet }}</span>
-          </v-chip>
-        </template>
-        <span>The players current bet</span>
-      </v-tooltip>
-    </span>
-  </v-row>
-  </v-col>
-</v-row>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import pokerModule from '../store/PokerModule';
-import Card from '../model/Card';
-import PokerCard from './PokerCard.vue';
+import PlayerStatusBar from './PlayerStatusBar.vue';
 
 
 @Component({
   components: {
-    PokerCard,
+    PlayerStatusBar,
   },
 })
-export default class PlayerCard extends Vue {
+export default class PlayerPanel extends Vue {
   @Prop()
   player: any;
 
@@ -169,18 +119,9 @@ export default class PlayerCard extends Vue {
 
   get sliderMin() {
     if (pokerModule.table.toCallAmount > this.player.bet) {
-      console.log('Can only raise: ', pokerModule.table.toRaiseAmount);
       return pokerModule.table.toCallAmount * 2;
     }
     return 2;
-  }
-
-  changeBackground() {
-    const element = document.getElementById('card-background');
-    console.log(element);
-    if (element) {
-      element.setAttribute('src', './stack');
-    }
   }
 }
 

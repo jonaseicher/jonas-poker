@@ -2,10 +2,10 @@
   <v-container>
     <v-row>
       <v-col v-for="p in poker.table.players" v-bind:key="p.name">
-        <PlayerCard :player="p" :table="poker.table" />
+        <PlayerPanel :player="p" :table="poker.table" />
       </v-col>
       <v-col v-for="p in poker.table.newHandPlayers" v-bind:key="p.name">
-        <PlayerCard :player="p" :table="poker.table" />
+        <PlayerPanel :player="p" :table="poker.table" />
       </v-col>
     </v-row>
     <v-row>
@@ -55,6 +55,7 @@
     <div v-if="poker.table.gameWinner">Game Winner: {{ poker.table.gameWinner.name }}</div>
     <div v-if="poker.table.stateDescription">Phase: {{ poker.table.stateDescription }}</div>
     <div v-if="poker.table.winDueToFolding">Everybody folded. </div>
+    <v-divider></v-divider>
     <div v-if="poker.table.winningCards && poker.table.winningCards.length > 0">
       Winning Cards:
       <PokerCard :card="card" v-for="card in poker.table.winningCards" :key="card.rank + card.suit" />
@@ -68,7 +69,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import { IMessage } from '@stomp/stompjs';
 import PokerCard from './PokerCard.vue';
-import PlayerCard from './PlayerCard.vue';
+import PlayerPanel from './PlayerPanel.vue';
 import CardsTable from './CardsTable.vue';
 import stompModule from '../store/StompModule';
 import pokerModule from '../store/PokerModule';
@@ -76,7 +77,7 @@ import pokerModule from '../store/PokerModule';
 @Component({
   components: {
     PokerCard,
-    PlayerCard,
+    PlayerPanel,
     CardsTable,
   },
 })
