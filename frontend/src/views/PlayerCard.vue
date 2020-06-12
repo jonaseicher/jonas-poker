@@ -91,7 +91,7 @@ import PlayerStatusBar from './PlayerStatusBar.vue';
     PlayerStatusBar,
   },
 })
-export default class PlayerPanel extends Vue {
+export default class PlayerCard extends Vue {
   @Prop()
   player: any;
 

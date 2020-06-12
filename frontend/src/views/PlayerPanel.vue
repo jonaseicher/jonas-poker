@@ -2,7 +2,7 @@
 <v-row>
   <v-col class="flex-grow-0">
 
-  <PlayerCard :player="player" />
+  <PlayerCard2 :player="player" />
 
   <!-- POCKET -->
   <v-row class="ma-2">
@@ -37,6 +37,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import PlayerCard from './PlayerCard.vue';
+import PlayerCard2 from './PlayerCard2.vue';
 import PokerCard from './PokerCard.vue';
 import PlayerStatusBar from './PlayerStatusBar.vue';
 
@@ -44,6 +45,7 @@ import PlayerStatusBar from './PlayerStatusBar.vue';
 @Component({
   components: {
     PlayerCard,
+    PlayerCard2,
     PokerCard,
     PlayerStatusBar,
   },
