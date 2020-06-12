@@ -70,16 +70,21 @@ import stompModule from '../store/StompModule';
 })
 export default class Dashboard extends Vue {
   todos = [
-    { title: 'Highlight best/winning hand', description: 'Highlight combination of pocket/table that make up each players best hand. Highlight winning player' },
-    { title: 'All-in mode', description: 'Detect All-ins and reveal pockets, then deal remaining cards.' },
-    { title: 'Retain Poker-Table', description: 'Store joined poker-table in vuex and load it when player clicks on "Poker" nav item.' },
-    { title: 'In-game Chat', description: 'Players see chat messages of other players in their game and can write them from the game.' },
-    { title: 'Join Table only once', description: 'Currently, players are only prevented from joining the table when they are already on it, but not when they are in a waiting position.' },
-    { title: 'Show waiting players', description: 'Show players who joined while a hand is in progress as waiting.' },
-    { title: 'Fix connection', description: 'Connection state management is a bit wonky (requires manual logout/login when token expires)' },
     { title: 'Sound Effects', description: 'Add sound effects for New Hand, Bet, call, raise, fold, join/leave, your turn' },
-    { title: 'Visual Effects', description: 'Add visual effects for New Hand, Bet, call, raise, fold, join/leave, your turn' },
+    { title: 'Personalisierte User', description: 'personalisieren der user (hintergrundbild, avatar foto)' },
     { title: 'Custom Backgrounds', description: 'Allow players to choose alternate or random backgrounds and propagate that to all players (e.g. https://picsum.photos/).' },
+    { title: 'Place players around the table', description: 'Store joined poker-table in vuex and load it when player clicks on "Poker" nav item.' },
+    { title: 'Highlight best/winning hand', description: 'Highlight combination of pocket/table that make up each players best hand. Highlight winning player' },
+    { title: 'Visual Effects', description: 'Add visual effects for New Hand, Bet, call, raise, fold, join/leave, your turn' },
+    { title: 'All-in mode', description: 'Detect All-ins and reveal pockets, then deal remaining cards. If all but one player are all-in, auto-resolve the game. bug: heads up all in raises des zweiten spielers wird nicht refunded?' },
+    { title: 'Join Table only once', description: 'Currently, players are only prevented from joining the table when they are already on it, but not when they are in a waiting position.' },
+    { title: 'Re-Buy', description: 'Players can rebuy when they run out of chips. Rebuy-Counter/Lives' },
+    { title: 'More starting chips', description: 'now 20, maybe 50. Or maybe the re-buy with lives solves that problem.' },
+    { title: 'Correct re-raises', description: 'reraise minimum  = doppelte differenz (nicht doppelte bet).' },
+    { title: 'Reveal correct cards after game', description: 'Dont reveal cards of players who folded. Dont reveal any cards when all players folded.' },
+    { title: 'In-game Chat', description: 'Players see chat messages of other players in their game and can write them from the game.' },
+    { title: 'Retain Poker-Table', description: 'Store joined poker-table in vuex and load it when player clicks on "Poker" nav item.' },
+    { title: 'Fix connection', description: 'Connection state management is a bit wonky (requires manual logout/login when token expires)' },
     { title: 'Reveal cards', description: 'Allow players to reveal their cards voluntarily after game conclusion' },
     { title: 'Dealer Mode', description: 'Dealer can interactively deal the cards, for example with drag & drop, then click to reveal them' },
     { title: 'Preflop Bet', description: 'In preflop, the big blind can "bet 2", which is the same as check, because his bet is already at 2. Fix it.' },
@@ -92,6 +97,7 @@ export default class Dashboard extends Vue {
     { done: true, title: 'Restict New Hand usage', description: 'Only allow new hand when game state = HAND_DONE' },
     { done: true, title: 'Cleanup', description: 'Hide debug stuff (json, unused tabs, etc)' },
     { done: true, title: 'Copy assets to heroku', description: 'Assets are not deployed to heroku in the current build. Change that.' },
+    { done: true, title: 'Show waiting players', description: 'Show players who joined while a hand is in progress as waiting.' },
   ];
 
   table = {

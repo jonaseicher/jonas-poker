@@ -33,6 +33,12 @@ const routes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "table" */ '../views/PokerTable2.vue'),
   },
   {
+    path: '/table3/:tableName',
+    props: true,
+    name: 'table3',
+    component: () => import(/* webpackChunkName: "table" */ '../views/PokerTable3.vue'),
+  },
+  {
     path: '/about',
     name: 'about',
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),

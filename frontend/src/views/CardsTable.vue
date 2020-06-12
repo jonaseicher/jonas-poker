@@ -1,25 +1,25 @@
 <template>
 <v-card min-width="400" max-width="620"
     height="150" class="d-flex flex-grow-1" color="cyan darken-4">
-<div class="d-flex flex-grow-1 justify-center align-center">
-  <v-row class="ma-5 d-flex">
-    <v-col>
-      <PokerCard v-if="cards[0]" :card="cards[0]" />
-    </v-col>
-    <v-col>
-      <PokerCard v-if="cards[1]" :card="cards[1]" />
-    </v-col>
-    <v-col>
-      <PokerCard v-if="cards[2]" :card="cards[2]" />
-    </v-col>
-    <v-col>
-      <PokerCard v-if="cards[3]" :card="cards[3]" />
-    </v-col>
-    <v-col>
-      <PokerCard v-if="cards[4]" :card="cards[4]" />
-    </v-col>
-  </v-row>
-</div>
+  <div class="d-flex flex-grow-1 justify-center align-center">
+    <v-row class="ma-5 d-flex">
+      <v-col>
+        <PokerCard v-if="cards[0]" :card="cards[0]" />
+      </v-col>
+      <v-col>
+        <PokerCard v-if="cards[1]" :card="cards[1]" />
+      </v-col>
+      <v-col>
+        <PokerCard v-if="cards[2]" :card="cards[2]" />
+      </v-col>
+      <v-col>
+        <PokerCard v-if="cards[3]" :card="cards[3]" />
+      </v-col>
+      <v-col>
+        <PokerCard v-if="cards[4]" :card="cards[4]" />
+      </v-col>
+    </v-row>
+  </div>
 </v-card>
 </template>
 

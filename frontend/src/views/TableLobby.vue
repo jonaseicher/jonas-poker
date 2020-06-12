@@ -20,11 +20,15 @@
       <template v-slot:item.actions="{ item }">
         <v-btn @click="joinTable(item)">
           <v-icon class="mr-2">mdi-login</v-icon>
-          Join Old Table
+          1
         </v-btn>
         <v-btn @click="joinTable2(item)">
           <v-icon class="mr-2">mdi-login</v-icon>
-          Join New Table
+          2
+        </v-btn>
+        <v-btn @click="joinTable3(item)">
+          <v-icon class="mr-2">mdi-login</v-icon>
+          3
         </v-btn>
       </template>
     </v-data-table>
@@ -63,6 +67,11 @@ export default class TableLobby extends Vue {
   joinTable2(table: any) {
     console.log('Joining Table2:', table.tableName);
     this.$router.push({ path: `/table2/${table.tableName}` });
+  }
+
+  joinTable3(table: any) {
+    console.log('Joining Table3:', table.tableName);
+    this.$router.push({ path: `/table3/${table.tableName}` });
   }
 
   created() {
