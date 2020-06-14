@@ -1,6 +1,7 @@
 package com.example.messagingstompwebsocket.pokerlib;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -215,13 +216,15 @@ public class TexasHoldemGame {
     continueGame();
   }
   
-  public void joinTable(String playerId) {
+  public void joinTable(String playerId, int position) {
     // Check that the player has not already joined.
     if (getPlayer(playerId) == null) {
       Player newPlayer = new Player(playerId, playerId, BUY_IN_CHIPS);
       newPlayer.setReady(true);
+      newPlayer.setTablePosition(position);
       if (!isStarted()) {
         players.add(newPlayer);
+        Collections.sort(players);
         setNextPlayers();
         
         if (isAllPlayersReadyToStart()) {

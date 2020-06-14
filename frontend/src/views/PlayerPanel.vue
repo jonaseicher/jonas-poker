@@ -2,7 +2,7 @@
 <v-row>
   <v-col class="flex-grow-0">
 
-  <PlayerCard2 :player="player" />
+  <PlayerCard :player="player" />
 
   <!-- POCKET -->
   <v-row class="ma-2">
@@ -37,25 +37,27 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import PlayerCard from './PlayerCard.vue';
-import PlayerCard2 from './PlayerCard2.vue';
+import PlayerCardSmall from './PlayerCardSmall.vue';
 import PokerCard from './PokerCard.vue';
 import PlayerStatusBar from './PlayerStatusBar.vue';
+import Table from '../model/Table';
+import Player from '../model/Player';
 
 
 @Component({
   components: {
     PlayerCard,
-    PlayerCard2,
+    PlayerCardSmall,
     PokerCard,
     PlayerStatusBar,
   },
 })
 export default class PlayerPanel extends Vue {
   @Prop()
-  player: any;
+  player!: Player;
 
   @Prop()
-  table: any;
+  table!: Table;
 
   get isMe() {
     console.log(this.$auth.user.name === this.player.name);

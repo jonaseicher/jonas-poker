@@ -1,4 +1,4 @@
-
+/* eslint-disable */
 function fetchNginxServerName() {
   return process.env.NGINX_SERVER_NAME;
 }

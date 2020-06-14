@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import stompModule from '../store/StompModule';
 import Card from '../model/Card';
 
 

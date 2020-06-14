@@ -39,7 +39,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import stompModule from '../store/StompModule';
-import pokerModule from '../store/PokerModule';
+import Table from '../model/Table';
 
 
 @Component
@@ -59,18 +59,18 @@ export default class TableLobby extends Vue {
     // { text: 'Game Over', value: 'gameOver' },
   ];
 
-  joinTable(table: any) {
+  joinTable(table: Table) {
     console.log('Joining Table:', table.tableName);
     this.$router.push({ path: `/table/${table.tableName}` });
   }
 
-  joinTable2(table: any) {
+  joinTable2(table: Table) {
     console.log('Joining Table2:', table.tableName);
     this.$router.push({ path: `/table2/${table.tableName}` });
   }
 
-  joinTable3(table: any) {
-    console.log('Joining Table3:', table.tableName);
+  joinTable3(table: Table) {
+    console.log('Going to Table3:', table.tableName);
     this.$router.push({ path: `/table3/${table.tableName}` });
   }
 

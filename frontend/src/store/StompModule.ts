@@ -46,6 +46,7 @@ class StompModule extends VuexModule {
   @Mutation
   setConnectHandler() {
     this.stompClient.onConnect = (receipt: IFrame) => {
+      console.log('onConnect', receipt);
       this.subscriptions.forEach((subscription: StompFutureSubscription) => {
         this.stompClient.subscribe(subscription.destination, subscription.callback);
       });
@@ -76,6 +77,7 @@ class StompModule extends VuexModule {
   }
 
   publish(destination: string, body: object) {
+    console.log(body);
     this.stompClient.publish({ destination, body: JSON.stringify(body) });
   }
 

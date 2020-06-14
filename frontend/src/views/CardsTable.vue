@@ -2,7 +2,7 @@
 <v-card min-width="400" max-width="620"
     height="150" class="d-flex flex-grow-1" color="cyan darken-4">
   <div class="d-flex flex-grow-1 justify-center align-center">
-    <v-row class="ma-5 d-flex">
+    <v-row class="ma-5 d-flex" v-if="cards">
       <v-col>
         <PokerCard v-if="cards[0]" :card="cards[0]" />
       </v-col>
@@ -37,7 +37,7 @@ import PokerCard from './PokerCard.vue';
 })
 export default class CardsTable extends Vue {
   @Prop()
-  cards: Card[] = [];
+  cards!: Card[];
   //   { rank: 0, suit: 'SPADE' },
   //   { rank: 0, suit: 'HEART' },
   //   { rank: 1, suit: 'SPADE' },

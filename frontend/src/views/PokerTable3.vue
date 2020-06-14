@@ -2,16 +2,16 @@
 <v-container>
   <!-- ROW 1 -->
   <div class="player-row">
-    <div class="player">Div</div>
-    <div class="player">Div</div>
-    <div class="player">Dqwewqeqweiv</div>
-    <div class="player">Div</div>
+    <div v-if="!iHaveJoined()" class="player" id="player-0" @click="poker.join(0)">Div</div>
+    <div v-if="!iHaveJoined()" class="player" id="player-1" @click="poker.join(1)">Div</div>
+    <div v-if="!iHaveJoined()" class="player" id="player-2" @click="poker.join(2)">Div</div>
+    <div v-if="!iHaveJoined()" class="player" id="player-3" @click="poker.join(3)">Div</div>
   </div>
   <!-- ROW 2 -->
   <div class="row">
     <div class="player-col">
-      <div class="player">P1</div>
-      <div class="player">P2</div>
+      <div v-if="!iHaveJoined()" class="player" id="player-10" @click="poker.join(10)">Div</div>
+      <div v-if="!iHaveJoined()" class="player" id="player-11" @click="poker.join(11)">Div</div>
     </div>
     <div class="table d-flex flex-grow-1 justify-center align-center">
       <v-row class="ma-5 d-flex">
@@ -33,17 +33,18 @@
       </v-row>
     </div>
     <div class="player-col">
-      <div class="player">P1</div>
-      <div class="player">P2</div>
+      <div v-if="!iHaveJoined()" class="player" id="player-4" @click="poker.join(4)">Div</div>
+      <div v-if="!iHaveJoined()" class="player" id="player-5" @click="poker.join(5)">Div</div>
     </div>
   </div>
   <!-- ROW 3 -->
-  <div class="player-row">
-    <div class="player">Div</div>
-    <div class="player">Div</div>
-    <div class="player">Div</div>
-    <div class="player">Div</div>
+    <div class="player-row">
+    <div v-if="!iHaveJoined()" class="player" id="player-6" @click="poker.join(6)">Div</div>
+    <div v-if="!iHaveJoined()" class="player" id="player-7" @click="poker.join(7)">Div</div>
+    <div v-if="!iHaveJoined()" class="player" id="player-8" @click="poker.join(8)">Div</div>
+    <div v-if="!iHaveJoined()" class="player" id="player-9" @click="poker.join(9)">Div</div>
   </div>
+  {{ poker.table }}
 </v-container>
 </template>
 
@@ -51,15 +52,19 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import { IMessage } from '@stomp/stompjs';
 import PokerCard from './PokerCard.vue';
-import PlayerCard2 from './PlayerCard2.vue';
+import PlayerCardSmall from './PlayerCardSmall.vue';
+import PlayerCardNotMe from './PlayerCardNotMe.vue';
 import CardsTable from './CardsTable.vue';
-import stompModule from '../store/StompModule';
 import pokerModule from '../store/PokerModule';
+import Table from '../model/Table';
+import Player from '../model/Player';
+import PlayerCard from './PlayerCard.vue';
 
 @Component({
   components: {
     PokerCard,
-    PlayerCard2,
+    PlayerCardSmall,
+    PlayerCardNotMe,
     CardsTable,
   },
 })
@@ -73,11 +78,57 @@ export default class PokerTable3 extends Vue {
 
   created() {
     pokerModule.subscribe(this.tableName);
+    pokerModule.subscribeWithCalback(this.tableName, this.updateTablePositions);
   }
 
   get isHandDone() {
     console.log(pokerModule.table.state);
     return pokerModule.table.state === 'HAND_DONE';
+  }
+
+  updateTablePositions(message: IMessage) {
+    const table: Table = JSON.parse(message.body);
+    table.players.forEach((player, i) => {
+      const elementId = `player-${player.tablePosition}`;
+      const playerChair: any = document.getElementById(elementId);
+      if (playerChair) {
+        const instance = new PlayerCard({
+          propsData: { player: pokerModule.getMe() },
+        });
+        instance.$mount(); // pass nothing
+        playerChair.parentNode.replaceChild(instance.$el, playerChair);
+        pokerModule.join(i);
+      } else {
+        console.log('Player Element already exists.', player);
+      }
+    });
+  }
+
+  // setPlayer(i: number) {
+  //   const elementId = `player-${i}`;
+  //   const playerChair: any = document.getElementById(elementId);
+  //   console.log('getMe', pokerModule.getMe());
+  //   if (playerChair) {
+  //     const instance = new PlayerCardNotMe({
+  //       propsData: { player: pokerModule.getMe() },
+  //     });
+  //     instance.$mount(); // pass nothing
+  //     playerChair.parentNode.replaceChild(instance.$el, playerChair);
+  //     pokerModule.join(i);
+  //   } else {
+  //     console.error('Error: Element not found. This should not happen.');
+  //   }
+  // }
+
+  iHaveJoined() {
+    // pokerModule.table;
+    // console.log('joined', this.playersAtTable.includes(pokerModule.getMe()));
+    // return this.playersAtTable.includes(pokerModule.getMe());
+    return false;
+  }
+
+  isMe(player: Player) {
+    return this.$auth.user.name === player.name;
   }
 }
 

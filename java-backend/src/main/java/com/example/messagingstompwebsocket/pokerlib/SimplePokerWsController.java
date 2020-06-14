@@ -35,10 +35,10 @@ public class SimplePokerWsController {
   }
   
   @MessageMapping("/poker/game/join")
-	public void joinGame(@Payload String tableName, JwtAuthenticationToken token) {
-    TexasHoldemGame table = pokerService.getTable(tableName);
+	public void joinGame(@Payload JoinTable joinTable, JwtAuthenticationToken token) {
+    TexasHoldemGame table = pokerService.getTable(joinTable.getTableName());
     String playerId = token.getToken().getClaim("name");
-    table.joinTable(playerId);
+    table.joinTable(playerId, joinTable.getPosition());
     sendTable(table);
   }
   
@@ -106,4 +106,11 @@ public class SimplePokerWsController {
 class Bet {
   String tableName;
   int amount;
+}
+
+
+@Data
+class JoinTable {
+  String tableName;
+  int position;
 }

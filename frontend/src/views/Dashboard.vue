@@ -56,10 +56,6 @@ import { Component, Vue } from 'vue-property-decorator';
 import PokerCard from './PokerCard.vue';
 import PlayerCard from './PlayerCard.vue';
 import CardsTable from './CardsTable.vue';
-import StompComponent from './StompComponent.vue';
-import chatModule from '../store/ChatModule';
-import stompModule from '../store/StompModule';
-
 
 @Component({
   components: {

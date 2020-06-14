@@ -61,17 +61,15 @@
       <PokerCard :card="card" v-for="card in poker.table.winningCards" :key="card.rank + card.suit" />
     </div>
     <v-btn @click="poker.reset(tableName)">Reset Table</v-btn>
-    <v-btn @click="poker.join(tableName)">Join Table</v-btn>
+    <v-btn @click="poker.join()">Join Table</v-btn>
   </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import { IMessage } from '@stomp/stompjs';
 import PokerCard from './PokerCard.vue';
 import PlayerPanel from './PlayerPanel.vue';
 import CardsTable from './CardsTable.vue';
-import stompModule from '../store/StompModule';
 import pokerModule from '../store/PokerModule';
 
 @Component({
@@ -94,7 +92,6 @@ export default class PokerTable2 extends Vue {
   }
 
   get isHandDone() {
-    console.log(pokerModule.table.state);
     return pokerModule.table.state === 'HAND_DONE';
   }
 }

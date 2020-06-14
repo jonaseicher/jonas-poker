@@ -59,7 +59,6 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import chatModule from '../store/ChatModule';
-import stompModule from '../store/StompModule';
 
 @Component
 export default class ChatComponent extends Vue {

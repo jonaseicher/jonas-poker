@@ -84,6 +84,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import pokerModule from '../store/PokerModule';
 import PlayerStatusBar from './PlayerStatusBar.vue';
+import Player from '../model/Player';
 
 
 @Component({
@@ -91,9 +92,9 @@ import PlayerStatusBar from './PlayerStatusBar.vue';
     PlayerStatusBar,
   },
 })
-export default class PlayerCard2 extends Vue {
+export default class PlayerCardSmall extends Vue {
   @Prop()
-  player: any;
+  player: Player = new Player();
 
   sliderBet = 2;
 

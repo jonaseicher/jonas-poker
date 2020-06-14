@@ -18,7 +18,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 
 @Component
-export default class PlayerCard extends Vue {
+export default class PlayerStatusBar extends Vue {
   @Prop()
   text!: string;
 

@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-btn @click="stomp.publishString('/app/poker/game', table.tableName)">Get Game</v-btn>
-    <v-btn @click="stomp.publishString('/app/poker/game/join', table.tableName)">Join</v-btn>
+    <v-btn @click="stomp.publish('/app/poker/game/join', { tableName: tableName, position: 0 })">Join</v-btn>
     <v-btn @click="stomp.publishString('/app/poker/game/reset', table.tableName)">Reset</v-btn>
     <v-btn @click="stomp.publishString('/app/poker/game/newhand', table.tableName)">New Hand</v-btn>
     <v-row>
@@ -68,7 +68,7 @@ import { IMessage } from '@stomp/stompjs';
 import PokerCard from './PokerCard.vue';
 import PlayerCard from './PlayerCard.vue';
 import stompModule from '../store/StompModule';
-import pokerModule from '../store/PokerModule';
+import Table from '../model/Table';
 
 @Component({
   components: {
@@ -84,11 +84,11 @@ export default class PokerTable extends Vue {
     return stompModule;
   }
 
-  table: any = {};
+  table: Table = new Table();
 
   created() {
     stompModule.subscribe({ destination: `/queue/pokertable/${this.tableName}`, callback: this.updateTable });
-    stompModule.publishString('/app/poker/game/join', this.tableName);
+    stompModule.publish('/app/poker/game/join', { tableName: this.tableName, position: 0 });
   }
 
   updateTable(message: IMessage) {

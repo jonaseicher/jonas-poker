@@ -19,7 +19,7 @@ import lombok.ToString;
 @Setter
 @ToString(of = {"id", "name", "chips", "bet", "potContribution", "chipsAwarded", "isFolded", "isReady"})
 @EqualsAndHashCode(of = { "id" })
-public class Player {
+public class Player implements Comparable {
   // The id of the player.
   private String id;
   // The name of the player.
@@ -48,6 +48,8 @@ public class Player {
   private Player nextPlayer;
   // True if this player is ready for a new hand.
   private boolean isReady;
+  // Absolute Table position (used for showing empty/taken seats in the frontend.) Should be used for sorting.
+  private int tablePosition;
   
   private static final String LOG_TAG = Player.class.getSimpleName();
   
@@ -177,6 +179,14 @@ public class Player {
    */
   public int getNet() {
     return chipsAwarded - potContribution;
+  }
+
+  @Override
+  public int compareTo(Object o) {
+    if (o instanceof Player) {
+      return this.tablePosition - ((Player)o).tablePosition;
+    }
+    return 0;
   }
   
 }
