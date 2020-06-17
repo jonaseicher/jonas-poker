@@ -121,7 +121,7 @@ export default class PokerTable3 extends Vue {
       if (playerChair) {
         let playerCard: Vue;
         if (this.isMe(player)) {
-          playerCard = new PlayerCard({
+          playerCard = new PlayerCardSmall({
             propsData: { player },
           });
         } else {

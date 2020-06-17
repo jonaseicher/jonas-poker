@@ -84,7 +84,7 @@ export default class PokerTable extends Vue {
     return stompModule;
   }
 
-  table: Table = new Table();
+  table!: Table;
 
   created() {
     stompModule.subscribe({ destination: `/queue/pokertable/${this.tableName}`, callback: this.updateTable });

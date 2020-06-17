@@ -2,12 +2,13 @@
   <v-card
     v-if="player"
     :class="cardClass"
-    width="320"
+    width="200"
+    dark
   >
-    <v-img id="card-background"
+    <!-- <v-img id="card-background"
       height="213px"
       src="./stack.jpg"
-    >
+    > -->
       <v-card-title>
         <span v-if="isActor" class="title mr-auto bounce">{{ player.name }}</span>
         <span v-else class="title mr-auto">{{ player.name }}</span>
@@ -76,7 +77,7 @@
           <v-btn :disabled="!isActor" @click="poker.bet(sliderBet)">bet {{ sliderBet }}</v-btn>
         </template>
       </v-card-actions>
-    </v-img>
+    <!-- </v-img> -->
   </v-card>
 </template>
 
@@ -94,7 +95,7 @@ import Player from '../model/Player';
 })
 export default class PlayerCardSmall extends Vue {
   @Prop()
-  player: Player = new Player();
+  player!: Player;
 
   sliderBet = 2;
 
@@ -121,7 +122,7 @@ export default class PlayerCardSmall extends Vue {
   }
 
   get cardClass() {
-    let cardClass = 'mx-auto';
+    let cardClass = '';
     if (this.isMe) {
       cardClass += ' itsMe';
     }
