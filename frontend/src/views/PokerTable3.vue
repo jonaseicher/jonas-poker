@@ -44,6 +44,10 @@
     <div v-if="!iHaveJoined()" class="player" id="player-8" @click="poker.join(8)">Div</div>
     <div v-if="!iHaveJoined()" class="player" id="player-9" @click="poker.join(9)">Div</div>
   </div>
+  <div class="row">
+    <v-btn @click="poker.reset(tableName)">Reset Table</v-btn>
+    <v-btn @click="poker.join()">Join Table</v-btn>
+  </div>
   {{ poker.table }}
 </v-container>
 </template>
@@ -65,6 +69,7 @@ import PlayerCard from './PlayerCard.vue';
     PokerCard,
     PlayerCardSmall,
     PlayerCardNotMe,
+    PlayerCard,
     CardsTable,
   },
 })
@@ -86,39 +91,53 @@ export default class PokerTable3 extends Vue {
     return pokerModule.table.state === 'HAND_DONE';
   }
 
+  takenSeats(table: Table) {
+    return table.players.map((player) => player.tablePosition);
+  }
+
+  getChair(i: number): any {
+    const elementId = `player-${i}`;
+    return document.getElementById(elementId);
+  }
+
+  playerCards: Vue[] = [];
+
   updateTablePositions(message: IMessage) {
     const table: Table = JSON.parse(message.body);
+    // const cardNumbers = this.playerCards.map((card) => card.$props.player.tablePosition);
+    // const badNumbers = cardNumbers.filter((num) => !(table.players.map((player) => player.tablePosition).includes(num)));
+    const badCards = this.playerCards.filter((card) => !(table.players.map((player) => player.tablePosition).includes(card.$props.player.tablePosition)));
+    console.log(badCards);
+    badCards.forEach((badCard: any) => {
+      this.getChair(badCard.$props.player.tablePosition).style.display = 'flex';
+      badCard.$destroy();
+      badCard.$el.parentElement.removeChild(badCard.$el);
+      this.playerCards.splice(this.playerCards.indexOf(badCard));
+    });
+
     table.players.forEach((player, i) => {
       const elementId = `player-${player.tablePosition}`;
       const playerChair: any = document.getElementById(elementId);
       if (playerChair) {
-        const instance = new PlayerCard({
-          propsData: { player: pokerModule.getMe() },
-        });
-        instance.$mount(); // pass nothing
-        playerChair.parentNode.replaceChild(instance.$el, playerChair);
-        pokerModule.join(i);
+        let playerCard: Vue;
+        if (this.isMe(player)) {
+          playerCard = new PlayerCard({
+            propsData: { player },
+          });
+        } else {
+          playerCard = new PlayerCardNotMe({
+            propsData: { player },
+          });
+        }
+        playerCard.$mount();
+        playerChair.parentNode.insertBefore(playerCard.$el, playerChair);
+        playerChair.style.display = 'none';
+        this.playerCards.push(playerCard);
       } else {
         console.log('Player Element already exists.', player);
       }
     });
   }
-
-  // setPlayer(i: number) {
-  //   const elementId = `player-${i}`;
-  //   const playerChair: any = document.getElementById(elementId);
-  //   console.log('getMe', pokerModule.getMe());
-  //   if (playerChair) {
-  //     const instance = new PlayerCardNotMe({
-  //       propsData: { player: pokerModule.getMe() },
-  //     });
-  //     instance.$mount(); // pass nothing
-  //     playerChair.parentNode.replaceChild(instance.$el, playerChair);
-  //     pokerModule.join(i);
-  //   } else {
-  //     console.error('Error: Element not found. This should not happen.');
-  //   }
-  // }
 
   iHaveJoined() {
     // pokerModule.table;

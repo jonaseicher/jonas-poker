@@ -39,9 +39,9 @@ import Player from '../model/Player';
     PlayerStatusBar,
   },
 })
-export default class PlayerCardSmall extends Vue {
+export default class PlayerCardNotMe extends Vue {
   @Prop()
-  player: Player = new Player();
+  player!: Player;
 
   get poker() {
     return pokerModule;
@@ -59,6 +59,10 @@ export default class PlayerCardSmall extends Vue {
       return false;
     }
     return pokerModule.table.button.name === this.player.name;
+  }
+
+  created() {
+    console.log('created playerCardNotMe with player', this.player);
   }
 }
 
