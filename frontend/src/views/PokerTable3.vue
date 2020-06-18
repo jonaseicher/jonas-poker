@@ -77,47 +77,62 @@ export default class PokerTable3 extends Vue {
   @Prop()
   tableName!: string;
 
+  playerCards: Vue[] = [];
+
   get poker() {
     return pokerModule;
   }
 
   created() {
     pokerModule.subscribe(this.tableName);
-    pokerModule.subscribeWithCalback(this.tableName, this.updateTablePositions);
+    pokerModule.subscribeWithCallback(this.tableName, this.updateTablePositions);
   }
 
-  get isHandDone() {
+  get isHandDone(): boolean {
     console.log(pokerModule.table.state);
     return pokerModule.table.state === 'HAND_DONE';
   }
 
-  takenSeats(table: Table) {
-    console.log(table.newHandPlayers.concat(table.players));
-    return table.players.map((player) => player.tablePosition);
+  /** Returns players in the current game plus joined players waiting for the new hand. */
+  get allPlayers(): Player[] {
+    const allPlayers = pokerModule.table.newHandPlayers.concat(pokerModule.table.players);
+    console.log('allPlayers (in-game and new-hand-players)', allPlayers);
+    return allPlayers;
   }
 
-  getChair(i: number): any {
-    const elementId = `player-${i}`;
-    return document.getElementById(elementId);
+  /** Returns Vue elements of players that are no longer on the table */
+  get leavingPlayerElements(): Vue[] {
+    const leavers = this.playerCards.filter((card) => !(this.allPlayers.map((player) => player.tablePosition).includes(card.$props.player.tablePosition)));
+    console.log('leavers', leavers);
+    return leavers;
   }
 
-  playerCards: Vue[] = [];
-
-  updateTablePositions(message: IMessage) {
-    const table: Table = JSON.parse(message.body);
-    this.takenSeats(table);
-    // const cardNumbers = this.playerCards.map((card) => card.$props.player.tablePosition);
-    // const badNumbers = cardNumbers.filter((num) => !(table.players.map((player) => player.tablePosition).includes(num)));
-    const badCards = this.playerCards.filter((card) => !(table.players.map((player) => player.tablePosition).includes(card.$props.player.tablePosition)));
-    console.log(badCards);
+  removePlayerCards(badCards: Vue[]) {
     badCards.forEach((badCard: any) => {
-      this.getChair(badCard.$props.player.tablePosition).style.display = 'flex';
+      this.getChairElement(badCard.$props.player.tablePosition).style.display = 'flex';
       badCard.$destroy();
       badCard.$el.parentElement.removeChild(badCard.$el);
       this.playerCards.splice(this.playerCards.indexOf(badCard));
     });
+  }
 
-    table.players.forEach((player, i) => {
+  get newPlayers() {
+    const newPlayers = this.allPlayers.filter((player) => !(this.playerCards.map((card) => card.$props.player.tablePosition).includes(player.tablePosition)));
+    console.log('newPlayers', newPlayers);
+    return newPlayers;
+  }
+
+  getChairElement(i: number): any {
+    const elementId = `player-${i}`;
+    return document.getElementById(elementId);
+  }
+
+  updateTablePositions(message: IMessage) {
+    console.log('updateTablePositions called');
+    const badCards = this.leavingPlayerElements;
+    this.removePlayerCards(badCards);
+
+    this.newPlayers.forEach((player, i) => {
       const elementId = `player-${player.tablePosition}`;
       const playerChair: any = document.getElementById(elementId);
       if (playerChair) {

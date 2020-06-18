@@ -68,7 +68,7 @@ class PokerModule extends VuexModule {
     stompModule.publishString('/app/poker/game', tableName);
   }
 
-  subscribeWithCalback(tableName: string, callback: (message: IMessage) => void) {
+  subscribeWithCallback(tableName: string, callback: (message: IMessage) => void) {
     stompModule.subscribe({
       destination: `/queue/pokertable/${tableName}`,
       callback,
