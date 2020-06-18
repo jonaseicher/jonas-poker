@@ -92,6 +92,7 @@ export default class PokerTable3 extends Vue {
   }
 
   takenSeats(table: Table) {
+    console.log(table.newHandPlayers.concat(table.players));
     return table.players.map((player) => player.tablePosition);
   }
 
@@ -104,6 +105,7 @@ export default class PokerTable3 extends Vue {
 
   updateTablePositions(message: IMessage) {
     const table: Table = JSON.parse(message.body);
+    this.takenSeats(table);
     // const cardNumbers = this.playerCards.map((card) => card.$props.player.tablePosition);
     // const badNumbers = cardNumbers.filter((num) => !(table.players.map((player) => player.tablePosition).includes(num)));
     const badCards = this.playerCards.filter((card) => !(table.players.map((player) => player.tablePosition).includes(card.$props.player.tablePosition)));

@@ -22,8 +22,8 @@ public class SimplePokerRestController {
   }
 
 	@GetMapping("/poker/game/join")
-	public TexasHoldemGame joinGame(@RequestParam String playerId) {
-    game.joinTable(playerId);
+	public TexasHoldemGame joinGame(@RequestParam String playerId, @RequestParam(defaultValue = "0") Integer position) {
+    game.joinTable(playerId, position);
 		return game;
   }
 
@@ -32,13 +32,13 @@ public class SimplePokerRestController {
     game.leaveTable(playerId);
 		return game;
   }
-  
+
   @GetMapping("/poker/game/reset")
-	public TexasHoldemGame reset() {    
+	public TexasHoldemGame reset() {
     game = new TexasHoldemGame();
 		return game;
   }
-  
+
 	@GetMapping("/poker/game/start")
 	public TexasHoldemGame startGame() {
     game.dealNewHand();
@@ -50,7 +50,7 @@ public class SimplePokerRestController {
     game.bet(playerId, amount);
 		return game;
   }
-  
+
 	@GetMapping("/poker/game/fold")
 	public TexasHoldemGame fold(@RequestParam String playerId) {
     game.fold(playerId);
