@@ -58,7 +58,6 @@ class PokerModule extends VuexModule {
     console.log('table updated in pokerModule');
   }
 
-  @Action
   subscribe(tableName: string) {
     console.log(`subscribe to ${tableName}`);
     stompModule.subscribe({
@@ -66,13 +65,6 @@ class PokerModule extends VuexModule {
       callback: this.updateTable,
     });
     stompModule.publishString('/app/poker/game', tableName);
-  }
-
-  subscribeWithCallback(tableName: string, callback: (message: IMessage) => void) {
-    stompModule.subscribe({
-      destination: `/queue/pokertable/${tableName}`,
-      callback,
-    });
   }
 }
 const pokerModule = new PokerModule({ store, name: 'poker' });

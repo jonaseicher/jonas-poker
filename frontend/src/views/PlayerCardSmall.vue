@@ -82,7 +82,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import {
+  Component, Vue, Prop, Watch,
+} from 'vue-property-decorator';
 import pokerModule from '../store/PokerModule';
 import PlayerStatusBar from './PlayerStatusBar.vue';
 import Player from '../model/Player';
@@ -95,7 +97,14 @@ import Player from '../model/Player';
 })
 export default class PlayerCardSmall extends Vue {
   @Prop()
-  player!: Player;
+  playerName!: string;
+
+  @Prop()
+  tablePosition!: number
+
+  get player() {
+    return pokerModule.getPlayer(this.playerName);
+  }
 
   sliderBet = 2;
 
@@ -104,6 +113,7 @@ export default class PlayerCardSmall extends Vue {
   }
 
   get isActor() {
+    if (!this.player) return null;
     if (pokerModule.table.actor == null) {
       return false;
     }
@@ -111,6 +121,7 @@ export default class PlayerCardSmall extends Vue {
   }
 
   get isDealer() {
+    if (!this.player) return null;
     if (pokerModule.table.actor == null) {
       return false;
     }
@@ -118,6 +129,7 @@ export default class PlayerCardSmall extends Vue {
   }
 
   get isMe() {
+    if (!this.player) return null;
     return this.$auth.user.name === this.player.name;
   }
 
@@ -130,10 +142,17 @@ export default class PlayerCardSmall extends Vue {
   }
 
   get sliderMin() {
+    if (!this.player) return 0;
     if (pokerModule.table.toCallAmount > this.player.bet) {
       return pokerModule.table.toCallAmount * 2;
     }
     return 2;
+  }
+
+  created() {
+    if (this.player) {
+      this.tablePosition = this.player.tablePosition;
+    }
   }
 }
 

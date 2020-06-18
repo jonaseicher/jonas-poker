@@ -53,7 +53,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import {
+  Component, Vue, Prop, Watch,
+} from 'vue-property-decorator';
 import { IMessage } from '@stomp/stompjs';
 import PokerCard from './PokerCard.vue';
 import PlayerCardSmall from './PlayerCardSmall.vue';
@@ -83,9 +85,18 @@ export default class PokerTable3 extends Vue {
     return pokerModule;
   }
 
+  get table() {
+    return pokerModule.table;
+  }
+
   created() {
     pokerModule.subscribe(this.tableName);
-    pokerModule.subscribeWithCallback(this.tableName, this.updateTablePositions);
+  }
+
+  @Watch('table')
+  onTableChanged() {
+    console.log('@Watch onTableChanged');
+    this.updateTablePositions();
   }
 
   get isHandDone(): boolean {
@@ -95,21 +106,21 @@ export default class PokerTable3 extends Vue {
 
   /** Returns players in the current game plus joined players waiting for the new hand. */
   get allPlayers(): Player[] {
-    const allPlayers = pokerModule.table.newHandPlayers.concat(pokerModule.table.players);
+    const allPlayers = [...pokerModule.table.newHandPlayers, ...pokerModule.table.players];
     console.log('allPlayers (in-game and new-hand-players)', allPlayers);
     return allPlayers;
   }
 
   /** Returns Vue elements of players that are no longer on the table */
   get leavingPlayerElements(): Vue[] {
-    const leavers = this.playerCards.filter((card) => !(this.allPlayers.map((player) => player.tablePosition).includes(card.$props.player.tablePosition)));
+    const leavers = this.playerCards.filter((card) => !this.allPlayers.includes(card.$props.player));
     console.log('leavers', leavers);
     return leavers;
   }
 
   removePlayerCards(badCards: Vue[]) {
     badCards.forEach((badCard: any) => {
-      this.getChairElement(badCard.$props.player.tablePosition).style.display = 'flex';
+      this.getChairElement(badCard.$props.tablePosition).style.display = 'flex';
       badCard.$destroy();
       badCard.$el.parentElement.removeChild(badCard.$el);
       this.playerCards.splice(this.playerCards.indexOf(badCard));
@@ -122,24 +133,19 @@ export default class PokerTable3 extends Vue {
     return newPlayers;
   }
 
-  getChairElement(i: number): any {
-    const elementId = `player-${i}`;
-    return document.getElementById(elementId);
+  isNew(player: Player): boolean {
+    return true;
   }
 
-  updateTablePositions(message: IMessage) {
-    console.log('updateTablePositions called');
-    const badCards = this.leavingPlayerElements;
-    this.removePlayerCards(badCards);
-
-    this.newPlayers.forEach((player, i) => {
+  addPlayerCards(newPlayers: Player[]) {
+    newPlayers.forEach((player, i) => {
       const elementId = `player-${player.tablePosition}`;
       const playerChair: any = document.getElementById(elementId);
       if (playerChair) {
         let playerCard: Vue;
         if (this.isMe(player)) {
           playerCard = new PlayerCardSmall({
-            propsData: { player },
+            propsData: { playerName: player.name },
           });
         } else {
           playerCard = new PlayerCardNotMe({
@@ -154,6 +160,19 @@ export default class PokerTable3 extends Vue {
         console.log('Player Element already exists.', player);
       }
     });
+  }
+
+  getChairElement(i: number): any {
+    const elementId = `player-${i}`;
+    return document.getElementById(elementId);
+  }
+
+  updateTablePositions() {
+    console.log('updateTablePositions called');
+    const badCards = this.leavingPlayerElements;
+    this.removePlayerCards(badCards);
+    const { newPlayers } = this;
+    this.addPlayerCards(newPlayers);
   }
 
   iHaveJoined() {

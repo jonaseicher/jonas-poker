@@ -43,6 +43,9 @@ export default class PlayerCardNotMe extends Vue {
   @Prop()
   player!: Player;
 
+  @Prop()
+  tablePosition!: number
+
   get poker() {
     return pokerModule;
   }
@@ -62,7 +65,9 @@ export default class PlayerCardNotMe extends Vue {
   }
 
   created() {
-    console.log('created playerCardNotMe with player', this.player);
+    if (this.player) {
+      this.tablePosition = this.player.tablePosition;
+    }
   }
 }
 
