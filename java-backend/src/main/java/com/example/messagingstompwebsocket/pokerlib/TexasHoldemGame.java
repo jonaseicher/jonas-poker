@@ -69,7 +69,7 @@ public class TexasHoldemGame {
     setState(State.NONE);
   }
 
-  
+
   public String getStateDescription() {
     switch (state) {
       case BET_1:
@@ -90,14 +90,14 @@ public class TexasHoldemGame {
   public boolean isStarted() {
     return state != State.NONE;
   }
-  
+
   /**
    * @return true if the game is over.
    */
   public boolean isGameOver() {
     return state == State.HAND_DONE && getPlayersWithChips().size() < 2;
   }
-  
+
   /**
    * @return the player who won the game or null if the game is not over.
    */
@@ -112,7 +112,7 @@ public class TexasHoldemGame {
     }
     return null;
   }
-  
+
   /**
    * @param playerId The UID of the player to find.
    * @return the player with the given UID.
@@ -123,16 +123,21 @@ public class TexasHoldemGame {
         return players.get(i);
       }
     }
+    for (int i = 0; i < newHandPlayers.size(); i++) {
+      if (newHandPlayers.get(i).getId().equals(playerId)) {
+        return newHandPlayers.get(i);
+      }
+    }
     return null;
   }
-  
+
   /**
    * @return true if the hand is in the DONE state and all players except one folded.
    */
   public boolean isWinDueToFolding() {
     return state == State.HAND_DONE && getPlayersInHand().size() == 1;
   }
-  
+
   /**
    * @return a list of cards in the winning hands.
    */
@@ -148,7 +153,7 @@ public class TexasHoldemGame {
     }
     return new ArrayList<Card>(cards);
   }
-  
+
   /**
    * @return the size of the pot, including chips in the current round of betting.
    */
@@ -159,7 +164,7 @@ public class TexasHoldemGame {
     }
     return pot + bets;
   }
-  
+
   /**
    * @return the minimum pot contribution among the active players. This should be the same
    *     amount for each active player, unless some have gone all-in.
@@ -173,7 +178,7 @@ public class TexasHoldemGame {
     }
     return minPotContribution;
   }
-  
+
   /**
    * @return the minimum amount needed to raise. This is the number of chips to raise to in the
    *     current round of betting and does not include any pot contribution from previous betting
@@ -182,23 +187,23 @@ public class TexasHoldemGame {
   public int getToRaiseAmount() {
     return Math.max(BIG_BLIND, getToCallAmount() * 2 + getPotContribution());
   }
-  
+
   public boolean isCurrentActor(String playerId) {
     return actor != null && actor.getId().equals(playerId);
   }
- 
+
   public void fold(String playerId) {
     if (!isCurrentActor(playerId)) throw new IllegalArgumentException(playerId + " is not the current Actor. Current Actor: " + actor);
-    
+
     if (actor.getBet() < toCallAmount && actor.getBet() < actor.getMaxBet()) {
       actor.fold();
     }
     continueGame();
   }
-  
+
   public void bet(String playerId, int amount) {
     if (!isCurrentActor(playerId)) throw new IllegalArgumentException(playerId + " is not the current Actor. Current Actor: " + actor);
-    
+
     if (amount > toCallAmount) {
       // Bet or raise.
       lastRaised = actor;
@@ -215,7 +220,7 @@ public class TexasHoldemGame {
     }
     continueGame();
   }
-  
+
   public void joinTable(String playerId, int position) {
     // Check that the player has not already joined.
     if (getPlayer(playerId) == null) {
@@ -224,9 +229,8 @@ public class TexasHoldemGame {
       newPlayer.setTablePosition(position);
       if (!isStarted()) {
         players.add(newPlayer);
-        Collections.sort(players);
         setNextPlayers();
-        
+
         if (isAllPlayersReadyToStart()) {
           // Deal a new hand and broadcast sync data to other players.
           dealNewHand();
@@ -238,9 +242,9 @@ public class TexasHoldemGame {
     } else {
       System.out.println(LOG_TAG + " Got PLAYER_JOINING message from a player already in the game: " +
         playerId);
-    }  
+    }
   }
-    
+
   public void leaveTable(String playerId) {
     Player player = getPlayer(playerId);
     if (player != null) {
@@ -252,7 +256,7 @@ public class TexasHoldemGame {
       }
     }
   }
-      
+
   public void requestNewHand(String playerId) {
     if (!isStarted() || state == State.HAND_DONE) {
       Player player = getPlayer(playerId);
@@ -264,36 +268,36 @@ public class TexasHoldemGame {
       }
     }
   }
-  
+
   /**
    * Starts a new hand of poker.
    */
   public void dealNewHand() {
     cleanupHand();
-    
+
     // Add any new players.
     for (int i = 0; i < newHandPlayers.size(); i++) {
       players.add(newHandPlayers.get(i));
     }
     setNextPlayers();
     newHandPlayers.clear();
-    
+
     // Shuffle the deck.
     deck = new Deck();
     deck.shuffle();
-    
+
     // Rotate the button. May be null for first hand.
     if (button == null) {
       button = players.get(0);
     } else {
       button = button.getNextPlayerNotBroke();
     }
-    
+
     setupHand();
   }
-  
 
-  
+
+
   /**
    * Resets member variables for a new hand.
    */
@@ -304,12 +308,12 @@ public class TexasHoldemGame {
     actor = null;
     lastRaised = null;
     winners = null;
-    
+
     for (int i = 0; i < players.size(); i++) {
       players.get(i).cleanupHand();
     }
   }
-  
+
   /**
    * Sets up a new hand of poker.
    */
@@ -317,25 +321,25 @@ public class TexasHoldemGame {
     // Draw cards for each player in the hand.
     for (int i = 0; i < players.size(); i++) {
       Player player = players.get(i);
-      if (!player.isBroke()) { 
+      if (!player.isBroke()) {
         players.get(i).drawCards(deck);
       }
     }
-    
+
     // Set up the blinds.
     Player smallBlind = button.getNextPlayerNotBroke();
     Player bigBlind = smallBlind.getNextPlayerNotBroke();
     smallBlind.setBet(Math.min(SMALL_BLIND, smallBlind.getMaxBet()));
     bigBlind.setBet(Math.min(BIG_BLIND, bigBlind.getMaxBet()));
-    
+
     // Start the first round of betting.
     actor = bigBlind.getNextPlayerNotBroke();
     lastRaised = actor;
     toCallAmount = BIG_BLIND;
-    
+
     setState(State.BET_1);
   }
-  
+
   /**
    * Continues the game after the current actor takes an action.
    */
@@ -350,10 +354,10 @@ public class TexasHoldemGame {
       clearPlayersReadyStatus();
       actor = null;
       setState(State.HAND_DONE);
-      
+
     } else if (actor == null) {
       concludeBettingRound();
-      
+
       switch (state) {
         case BET_1:
           // Deal the flop.
@@ -363,21 +367,21 @@ public class TexasHoldemGame {
           startBettingRound();
           setState(State.BET_2);
           break;
-          
+
         case BET_2:
           // Deal the turn.
           boardCards.add(deck.drawCard());
           startBettingRound();
           setState(State.BET_3);
           break;
-          
+
         case BET_3:
           // Deal the river.
           boardCards.add(deck.drawCard());
           startBettingRound();
           setState(State.BET_4);
           break;
-          
+
         case BET_4:
           // Award winners by showdown.
           winners = getWinnersByShowdown();
@@ -389,7 +393,7 @@ public class TexasHoldemGame {
       }
     }
   }
-  
+
   /**
    * Concludes a round of betting by setting the necessary member variables.
    */
@@ -400,7 +404,7 @@ public class TexasHoldemGame {
       player.concludeBettingRound();
     }
   }
-  
+
   /**
    * Starts a round of betting by setting the necessary member variables.
    * There must be at least two players who have not folded.
@@ -413,7 +417,7 @@ public class TexasHoldemGame {
     lastRaised = actor;
     toCallAmount = 0;
   }
-  
+
   /**
    * @return the winning players determined by show down.
    */
@@ -435,13 +439,13 @@ public class TexasHoldemGame {
     }
     return winners;
   }
-  
+
   /**
    * Awards the winners of a hand the chips in the pot.
    * There may be more than one winner if the best hand values are equal.
    */
   private void awardWinners() {
-    
+
     // Determine the lowest pot contribution among the winners.
     int lowestPotContribution = Integer.MAX_VALUE;
     for (int i = 0; i < winners.size(); i++) {
@@ -449,7 +453,7 @@ public class TexasHoldemGame {
         lowestPotContribution = winners.get(i).getPotContribution();
       }
     }
-    
+
     // Return any extra chips to players.
     int mainPot = 0;
     for (int i = 0; i < players.size(); i++) {
@@ -463,7 +467,7 @@ public class TexasHoldemGame {
         }
       }
     }
-    
+
     // Award chips in the main pot.
     int chipsEach = mainPot / winners.size();
     int remainder = mainPot - chipsEach * winners.size();
@@ -476,7 +480,7 @@ public class TexasHoldemGame {
       winners.get(i).awardChips(chipsAwarded);
     }
   }
-  
+
   /**
    * Clears the ready status for all players.
    */
@@ -485,7 +489,7 @@ public class TexasHoldemGame {
       players.get(i).setReady(false);
     }
   }
-  
+
   /**
    * @return true if there are enough players for a new hand and the players who are not broke
    *     are ready for a new hand to start.
@@ -502,11 +506,12 @@ public class TexasHoldemGame {
     }
     return true;
   }
-  
+
   /**
    * Sets an ordering on the players by setting each player's next player.
    */
   private void setNextPlayers() {
+    Collections.sort(players);
     for (int i = 0; i < players.size(); i++) {
       Player player = players.get(i);
       if (i > 0) {
@@ -515,7 +520,7 @@ public class TexasHoldemGame {
     }
     players.get(players.size() - 1).setNextPlayer(players.get(0));
   }
-  
+
   /**
    * @return the next player to act in the current round of betting or null if the current round
    *     of betting has concluded. The current round of betting concludes when the current actor
@@ -535,7 +540,7 @@ public class TexasHoldemGame {
     }
     return nextActor;
   }
-  
+
   /**
    * @return the players who are still in the hand (have not folded).
    */
@@ -548,7 +553,7 @@ public class TexasHoldemGame {
     }
     return playersInHand;
   }
-  
+
   /**
    * @return the players who still have chips (have not gone broke).
    */

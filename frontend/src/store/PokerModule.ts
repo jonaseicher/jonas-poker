@@ -11,6 +11,10 @@ import store from './store';
 class PokerModule extends VuexModule {
   table: Table = new Table();
 
+  get allPlayers() {
+    return [...this.table.players, ...this.table.newHandPlayers];
+  }
+
   // Table management
   getGame() {
     stompModule.publishString('/app/poker/game', this.table.tableName);
@@ -43,12 +47,17 @@ class PokerModule extends VuexModule {
   }
 
   getPlayer(playerName: string): Player | undefined {
-    return this.table.players.find((player: any) => player.name === playerName);
+    return this.allPlayers.find((player: any) => player.name === playerName);
+    // return this.table.players.find((player: any) => player.name === playerName);
   }
 
   getMe(): Player | undefined {
     const playerName = stompModule.idToken.name;
-    if (playerName) return this.getPlayer(playerName);
+    if (playerName) {
+      console.log(playerName);
+      const player = this.getPlayer(playerName);
+      return player;
+    }
     return undefined;
   }
 

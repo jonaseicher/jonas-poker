@@ -2,16 +2,16 @@
 <v-container>
   <!-- ROW 1 -->
   <div class="player-row">
-    <div v-if="!iHaveJoined()" class="player" id="player-0" @click="poker.join(0)">Div</div>
-    <div v-if="!iHaveJoined()" class="player" id="player-1" @click="poker.join(1)">Div</div>
-    <div v-if="!iHaveJoined()" class="player" id="player-2" @click="poker.join(2)">Div</div>
-    <div v-if="!iHaveJoined()" class="player" id="player-3" @click="poker.join(3)">Div</div>
+    <div :class="iHaveJoined()? 'hidden':''" class="player" id="player-0" @click="poker.join(0)">Div</div>
+    <div :class="iHaveJoined()? 'hidden':''" class="player" id="player-1" @click="poker.join(1)">Div</div>
+    <div :class="iHaveJoined()? 'hidden':''" class="player" id="player-2" @click="poker.join(2)">Div</div>
+    <div :class="iHaveJoined()? 'hidden':''" class="player" id="player-3" @click="poker.join(3)">Div</div>
   </div>
   <!-- ROW 2 -->
   <div class="row">
     <div class="player-col">
-      <div v-if="!iHaveJoined()" class="player" id="player-10" @click="poker.join(10)">Div</div>
-      <div v-if="!iHaveJoined()" class="player" id="player-11" @click="poker.join(11)">Div</div>
+      <div :class="iHaveJoined()? 'hidden':''" class="player" id="player-11" @click="poker.join(11)">Div</div>
+      <div :class="iHaveJoined()? 'hidden':''" class="player" id="player-10" @click="poker.join(10)">Div</div>
     </div>
     <div class="table d-flex flex-grow-1 justify-center align-center">
       <v-row class="ma-5 d-flex">
@@ -33,20 +33,22 @@
       </v-row>
     </div>
     <div class="player-col">
-      <div v-if="!iHaveJoined()" class="player" id="player-4" @click="poker.join(4)">Div</div>
-      <div v-if="!iHaveJoined()" class="player" id="player-5" @click="poker.join(5)">Div</div>
+      <div :class="iHaveJoined()? 'hidden':''" class="player" id="player-4" @click="poker.join(4)">Div</div>
+      <div :class="iHaveJoined()? 'hidden':''" class="player" id="player-5" @click="poker.join(5)">Div</div>
     </div>
   </div>
   <!-- ROW 3 -->
     <div class="player-row">
-    <div v-if="!iHaveJoined()" class="player" id="player-6" @click="poker.join(6)">Div</div>
-    <div v-if="!iHaveJoined()" class="player" id="player-7" @click="poker.join(7)">Div</div>
-    <div v-if="!iHaveJoined()" class="player" id="player-8" @click="poker.join(8)">Div</div>
-    <div v-if="!iHaveJoined()" class="player" id="player-9" @click="poker.join(9)">Div</div>
+    <div :class="iHaveJoined()? 'hidden':''" class="player" id="player-9" @click="poker.join(9)">Div</div>
+    <div :class="iHaveJoined()? 'hidden':''" class="player" id="player-8" @click="poker.join(8)">Div</div>
+    <div :class="iHaveJoined()? 'hidden':''" class="player" id="player-7" @click="poker.join(7)">Div</div>
+    <div :class="iHaveJoined()? 'hidden':''" class="player" id="player-6" @click="poker.join(6)">Div</div>
   </div>
   <div class="row">
     <v-btn @click="poker.reset(tableName)">Reset Table</v-btn>
     <v-btn @click="poker.join()">Join Table</v-btn>
+    <v-btn @click="poker.leave()">Leave Table</v-btn>
+    <v-btn @click="poker.newHand()">New Hand</v-btn>
   </div>
   {{ poker.table }}
 </v-container>
@@ -113,28 +115,37 @@ export default class PokerTable3 extends Vue {
 
   /** Returns Vue elements of players that are no longer on the table */
   get leavingPlayerElements(): Vue[] {
-    const leavers = this.playerCards.filter((card) => !this.allPlayers.includes(card.$props.player));
+    const leavers = this.playerCards.filter((card) => {
+      console.log(card.$props.playerName);
+      const isOnTable = this.allPlayers.map((p) => p.name).includes(card.$props.playerName);
+      console.log('isOnTable', isOnTable);
+      console.log(this.allPlayers[0]);
+      return !isOnTable;
+    });
     console.log('leavers', leavers);
     return leavers;
   }
 
   removePlayerCards(badCards: Vue[]) {
     badCards.forEach((badCard: any) => {
-      this.getChairElement(badCard.$props.tablePosition).style.display = 'flex';
+      this.getChairElement(badCard.$props.tablePosition).style.display = 'block';
       badCard.$destroy();
       badCard.$el.parentElement.removeChild(badCard.$el);
-      this.playerCards.splice(this.playerCards.indexOf(badCard));
+      this.playerCards.splice(this.playerCards.indexOf(badCard), 1);
     });
   }
 
   get newPlayers() {
-    const newPlayers = this.allPlayers.filter((player) => !(this.playerCards.map((card) => card.$props.player.tablePosition).includes(player.tablePosition)));
+    const newPlayers = this.allPlayers.filter((player) => {
+      const cardPositions = this.playerCards.map((card) => card.$props.tablePosition);
+      const playerHasCard = cardPositions.includes(player.tablePosition);
+      if (!playerHasCard) {
+        console.log(`Player ${player} has no card. Card positions: ${cardPositions}`);
+      }
+      return !playerHasCard;
+    });
     console.log('newPlayers', newPlayers);
     return newPlayers;
-  }
-
-  isNew(player: Player): boolean {
-    return true;
   }
 
   addPlayerCards(newPlayers: Player[]) {
@@ -149,7 +160,7 @@ export default class PokerTable3 extends Vue {
           });
         } else {
           playerCard = new PlayerCardNotMe({
-            propsData: { player },
+            propsData: { playerName: player.name },
           });
         }
         playerCard.$mount();
@@ -175,11 +186,9 @@ export default class PokerTable3 extends Vue {
     this.addPlayerCards(newPlayers);
   }
 
-  iHaveJoined() {
-    // pokerModule.table;
-    // console.log('joined', this.playersAtTable.includes(pokerModule.getMe()));
-    // return this.playersAtTable.includes(pokerModule.getMe());
-    return false;
+  iHaveJoined(): boolean {
+    console.log('iHaveJoined', pokerModule.getMe());
+    return pokerModule.getMe() !== undefined;
   }
 
   isMe(player: Player) {
@@ -237,5 +246,8 @@ export default class PokerTable3 extends Vue {
   margin: 10px 80px;
   justify-content: space-around;
   display: flex;
+}
+.hidden {
+  display: none !important;
 }
 </style>

@@ -41,10 +41,14 @@ import Player from '../model/Player';
 })
 export default class PlayerCardNotMe extends Vue {
   @Prop()
-  player!: Player;
+  playerName!: string;
 
   @Prop()
   tablePosition!: number
+
+  get player() {
+    return pokerModule.getPlayer(this.playerName);
+  }
 
   get poker() {
     return pokerModule;
@@ -54,14 +58,14 @@ export default class PlayerCardNotMe extends Vue {
     if (pokerModule.table.actor == null) {
       return false;
     }
-    return pokerModule.table.actor.name === this.player.name;
+    return pokerModule.table.actor.name === this.playerName;
   }
 
   get isDealer() {
     if (pokerModule.table.actor == null) {
       return false;
     }
-    return pokerModule.table.button.name === this.player.name;
+    return pokerModule.table.button.name === this.playerName;
   }
 
   created() {
