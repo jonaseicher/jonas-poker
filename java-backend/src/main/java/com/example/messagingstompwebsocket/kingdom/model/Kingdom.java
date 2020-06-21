@@ -9,5 +9,5 @@ import lombok.Data;
 public class Kingdom {
   String name;
   List<Townsman> townsmen = new ArrayList<>();
-  List<EventCard> kingdomEvents = new ArrayList<>();
+  Deck<Card> kingdomEvents = new Deck();
 }
