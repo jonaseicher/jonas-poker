@@ -1,8 +1,8 @@
-package com.example.messagingstompwebsocket;
+package com.example.messagingstompwebsocket.poker;
 
 import java.util.List;
 
-import com.example.messagingstompwebsocket.pokerlib.TexasHoldemGame;
+import com.example.messagingstompwebsocket.poker.pokerlib.TexasHoldemGame;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -21,5 +21,5 @@ public class TableController {
 	public List<TexasHoldemGame> tables(JwtAuthenticationToken token) {
 		return pokerService.tables;
 	}
-	
+
 }

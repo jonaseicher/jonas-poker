@@ -1,4 +1,4 @@
-package com.example.messagingstompwebsocket.pokerlib;
+package com.example.messagingstompwebsocket.poker.pokerlib;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,14 +8,14 @@ import lombok.ToString;
 @ToString
 public class Hand {
   // The 5 cards that make up the hand.
-  private List<Card> hand;
-  
+  private List<PlayingCard> hand;
+
   // The sorting orders of the hand, higher is better, lower index is higher priority.
   private List<Integer> sortingOrders;
-  
+
   // The category of the hand.
   private Category category;
-  
+
   // The possible categories in order from lowest to highest value.
   public enum Category {
     HIGH_CARD(new int[]{39, 37, 22, 6, 27}),
@@ -28,56 +28,56 @@ public class Hand {
     FOUR_OF_A_KIND(new int[]{45, 19, 32, 6, 13}),
     STRAIGHT_FLUSH(new int[]{8, 7, 6, 5, 4}),
     ROYAL_FLUSH(new int[]{39, 51, 50, 49, 48});
-    
+
     private final Hand exampleHand;
-    
+
     private Category(int[] exampleHandCards) {
       exampleHand = new Hand(exampleHandCards);
     }
-    
+
     public Hand exampleHand() {
       return exampleHand;
     }
   }
 
   private static final String LOG_TAG = Hand.class.getSimpleName();
-  
+
   /**
    * Constructs a hand with the given cards.
    * @param cards The 5 cards that make up the hand.
    */
-  public Hand(List<Card> hand) {
-    this.hand = new ArrayList<Card>(hand);
+  public Hand(List<PlayingCard> hand) {
+    this.hand = new ArrayList<PlayingCard>(hand);
     computeCategory();
   }
-  
+
   public Hand(int[] cardIndexes) {
-    hand = new ArrayList<Card>();
+    hand = new ArrayList<PlayingCard>();
     for (int i = 0; i < cardIndexes.length; i++) {
-      hand.add(Card.fromIndex(cardIndexes[i]));
+      hand.add(PlayingCard.fromIndex(cardIndexes[i]));
     }
     computeCategory();
   }
-  
+
   /**
    * @return the category of this hand.
    */
   public Category getCategory() {
     return category;
   }
-  
+
   /**
    * @param card The card to check.
    * @return true if this hand contains the card.
    */
-  public boolean contains(Card card) {
+  public boolean contains(PlayingCard card) {
     return hand.contains(card);
   }
-  
-  public List<Card> getCards() {
+
+  public List<PlayingCard> getCards() {
     return hand;
   }
-  
+
   /**
    * Compares the value of this hand with another.
    * @param other The hand to compare with.
@@ -89,7 +89,7 @@ public class Hand {
     } else if (category.ordinal() > other.category.ordinal()) {
       return 1;
     }
-    
+
     // Hands of the same category are further sorted by the sorting orders list.
     for (int i = 0; i < sortingOrders.size(); i++) {
       if (sortingOrders.get(i) < other.sortingOrders.get(i)) {
@@ -98,10 +98,10 @@ public class Hand {
         return 1;
       }
     }
-    
+
     return 0;
   }
-  
+
   /**
    * Computes the category and sorting orders of this hand.
    */
@@ -110,19 +110,19 @@ public class Hand {
       System.out.println(LOG_TAG + " Hand does not contain 5 cards: " + toString());
       return;
     }
-    
+
     // Compute the rank counts.
     int rankCounts[] = new int[13];
-    for (Card card : hand) {
+    for (PlayingCard card : hand) {
       rankCounts[card.getRank()]++;
     }
-    
+
     // Check for any pair, 3 of a kind, 4 of a kind combos.
     int rankCountCounts[] = new int[6];
     for (int i = 12; i >= 0; i--) {
       rankCountCounts[rankCounts[i]]++;
     }
-    
+
     // Check for flush.
     boolean hasFlush = true;
     for (int i = 1; i < hand.size(); i++) {
@@ -131,7 +131,7 @@ public class Hand {
         break;
       }
     }
-    
+
     // Check for straight.
     boolean hasStraight = true;
     boolean isAceHigh = false;
@@ -156,7 +156,7 @@ public class Hand {
         hasStraight = false;
       }
     }
-    
+
     // Get the highest rank for the straight. Ace high straight is 13. Ace low straight is 4.
     int straightHighRank = 13;
     if (rankCounts[0] == 0) {
@@ -168,7 +168,7 @@ public class Hand {
     } else if (!isAceHigh) {
       straightHighRank = 4;
     }
-    
+
     // Compute the sorting orders.
     sortingOrders = new ArrayList<Integer>();
     for (int i = 4; i >= 1; i--) {
@@ -184,7 +184,7 @@ public class Hand {
         }
       }
     }
-    
+
     if (hasFlush && hasStraight) {
       if (isAceHigh) {
         category = Category.ROYAL_FLUSH;
@@ -194,30 +194,30 @@ public class Hand {
         sortingOrders.clear();
         sortingOrders.add(straightHighRank);
       }
-      
+
     } else if (rankCountCounts[4] == 1) {
       category = Category.FOUR_OF_A_KIND;
-    
+
     } else if (rankCountCounts[3] == 1 && rankCountCounts[2] == 1) {
       category = Category.FULL_HOUSE;
-      
+
     } else if (hasFlush) {
       category = Category.FLUSH;
-    
+
     } else if (hasStraight) {
       category = Category.STRAIGHT;
       sortingOrders.clear();
       sortingOrders.add(straightHighRank);
-    
+
     } else if (rankCountCounts[3] == 1) {
       category = Category.THREE_OF_A_KIND;
-    
+
     } else if (rankCountCounts[2] == 2) {
       category = Category.TWO_PAIR;
-    
+
     } else if (rankCountCounts[2] == 1) {
       category = Category.ONE_PAIR;
-      
+
     } else {
       category = Category.HIGH_CARD;
     }

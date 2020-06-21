@@ -1,4 +1,4 @@
-package com.example.messagingstompwebsocket.pokerlib;
+package com.example.messagingstompwebsocket.poker.pokerlib;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public class Player implements Comparable {
   // because no other player called a bet.
   private int chipsAwarded;
   // The player's pocket cards.
-  private List<Card> pocketCards;
+  private List<PlayingCard> pocketCards;
   // The best hand the player can make with the board cards.
   private Hand bestHand;
   // True if this player has folded.
@@ -50,18 +50,18 @@ public class Player implements Comparable {
   private boolean isReady;
   // Absolute Table position (used for showing empty/taken seats in the frontend.) Should be used for sorting.
   private int tablePosition;
-  
+
   private static final String LOG_TAG = Player.class.getSimpleName();
-  
+
   public Player(String id, String name, int chips) {
     this.id = id;
     this.name = name;
     this.chips = chips;
-    pocketCards = new ArrayList<Card>();
+    pocketCards = new ArrayList<PlayingCard>();
     cleanupHand();
   }
-  
-  
+
+
   /**
    * @return the next player that is not broke or null if all players are broke.
    */
@@ -77,7 +77,7 @@ public class Player implements Comparable {
     }
     return next;
   }
-  
+
   /**
    * Resets member variables for a new hand.
    */
@@ -89,7 +89,7 @@ public class Player implements Comparable {
     isFolded = false;
     chipsAwarded = 0;
   }
-  
+
   /**
    * Draws 2 pocket cards.
    * @param deck The deck to draw cards from. Must have at least 2 cards.
@@ -98,19 +98,19 @@ public class Player implements Comparable {
     pocketCards.add(deck.drawCard());
     pocketCards.add(deck.drawCard());
   }
-  
-  
+
+
   /**
    * Constructs the best hand from this player's pocket cards and the board cards.
    * @param boardCards The shared community cards on the board.
    */
-  public void constructBestHand(List<Card> boardCards) {
-    List<Card> cards = new ArrayList<Card>();
+  public void constructBestHand(List<PlayingCard> boardCards) {
+    List<PlayingCard> cards = new ArrayList<PlayingCard>();
     cards.addAll(pocketCards);
     cards.addAll(boardCards);
     bestHand = new HandPool(cards).getBestHand();
   }
-  
+
   /**
    * Sets the player's bet amount for the current round of betting.
    * Must be at least the previous bet amount and no greater than the number of chips.
@@ -127,14 +127,14 @@ public class Player implements Comparable {
           (chips + betDifference) + " chips.");
     }
   }
-    
+
   /**
    * Causes this player to fold the hand.
    */
   public void fold() {
     isFolded = true;
   }
-  
+
   /**
    * Resets member variables for a new round of betting.
    */
@@ -142,7 +142,7 @@ public class Player implements Comparable {
     potContribution += bet;
     bet = 0;
   }
-  
+
   /**
    * Gives this player the given number of chips.
    * @param chipsAwarded The number of chips to give.
@@ -151,14 +151,14 @@ public class Player implements Comparable {
     this.chipsAwarded += chipsAwarded;
     chips += chipsAwarded;
   }
-  
+
   /**
    * @return The total bet the player has made for the current hand.
    */
   public int getTotalBet() {
     return potContribution + bet;
   }
-  
+
   /**
    * @return The maximum bet that the player can make for the current betting round.
    *     Betting this amount would have the player go all-in.
@@ -166,14 +166,14 @@ public class Player implements Comparable {
   public int getMaxBet() {
     return chips + bet;
   }
-  
+
   /**
    * @return true if this player is out of the game.
    */
   public boolean isBroke() {
     return chips + bet + potContribution == 0;
   }
-  
+
   /**
    * @return the net value in chips lost or earned for a hand.
    */
@@ -188,5 +188,5 @@ public class Player implements Comparable {
     }
     return 0;
   }
-  
+
 }

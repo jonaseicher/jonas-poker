@@ -1,11 +1,11 @@
-package com.example.messagingstompwebsocket;
+package com.example.messagingstompwebsocket.poker;
 
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.messagingstompwebsocket.pokerlib.Player;
-import com.example.messagingstompwebsocket.pokerlib.TexasHoldemGame;
+import com.example.messagingstompwebsocket.poker.pokerlib.Player;
+import com.example.messagingstompwebsocket.poker.pokerlib.TexasHoldemGame;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ public class PokerController {
 
 
 	//////////////// Deal cards to each player.
-	
+
 	@MessageMapping("/karten")
 	@SendToUser("/queue/karten")
 	public String karten(@Payload String message, Principal user) throws Exception {
@@ -63,7 +63,7 @@ public class PokerController {
 	// public void cards(@Payload String message, Principal user, SimpMessageHeaderAccessor sha) throws Exception {
 	// 	String sessionId = String.valueOf(sha.getHeader("simpSessionId"));
 	// 	log.info("Received message in /app/cards: " + message + " from " + user);
-	// 	messagingTemplate.convertAndSendToUser("jonas", "/queue/cards", message);	
+	// 	messagingTemplate.convertAndSendToUser("jonas", "/queue/cards", message);
 	// 	// return "Here are your cards!";
 	// }
 

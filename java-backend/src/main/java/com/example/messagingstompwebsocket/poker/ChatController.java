@@ -1,9 +1,9 @@
-package com.example.messagingstompwebsocket;
+package com.example.messagingstompwebsocket.poker;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.messagingstompwebsocket.pokerlib.Player;
+import com.example.messagingstompwebsocket.poker.pokerlib.Player;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ public class ChatController {
 		}
 		return playersInLobby;
 	}
-	
+
 	// @MessageMapping("/lobby/player/deleted")
 	// @SendTo("/lobby/players")
 	// public List<VuePlayer> deletedPlayer(JwtAuthenticationToken token) {
@@ -68,7 +68,7 @@ public class ChatController {
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 class VuePlayer {
-	
+
 	public String getName() {
 		return player.getName();
 	}
@@ -76,7 +76,7 @@ class VuePlayer {
 	@EqualsAndHashCode.Include
 	public String getId() {
 		return player.getId();
-	
+
 	}
 	public void setName(String value) {
 		player.setName(value) ;
@@ -88,7 +88,7 @@ class VuePlayer {
 
 	@JsonIgnore
 	Player player;
-	
+
 	@JsonIgnore
 	JwtAuthenticationToken token;
 
