@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class KingdomController {
 
   @Autowired
-  KingdomService service;
+  KingdomService kingdomService;
 
-  @GetMapping
-  public ResponseEntity<Kingdom> getKingdom(@RequestParam String kingdomName) {
-    return ResponseEntity.ok().body(service.getKingdom());
+  @GetMapping("/kingdom")
+  public ResponseEntity<Kingdom> getKingdom(@RequestParam(defaultValue = "Beacharena") String kingdomName) {
+    return ResponseEntity.ok().body(kingdomService.getKingdom());
   }
 
 }

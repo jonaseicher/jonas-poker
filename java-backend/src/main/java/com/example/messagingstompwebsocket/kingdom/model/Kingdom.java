@@ -1,5 +1,6 @@
 package com.example.messagingstompwebsocket.kingdom.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -8,5 +9,5 @@ import lombok.Data;
 public class Kingdom {
 
   String name;
-  List<Townsman> townsmen;
+  List<Townsman> townsmen = new ArrayList<>();
 }

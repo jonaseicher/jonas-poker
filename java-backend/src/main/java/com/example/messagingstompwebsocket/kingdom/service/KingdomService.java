@@ -5,6 +5,7 @@ import com.example.messagingstompwebsocket.kingdom.model.Townsman;
 
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class KingdomService {
 
