@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DeckService {
 
-   public void addCards(Deck deck, Class<Card> clazz, int amount) {
+   public void addCards(Deck deck, Class<? extends Card> clazz, int amount) {
     try {
       for (int i = 0; i < amount; i++) {
         deck.getDraw().add(clazz.newInstance());

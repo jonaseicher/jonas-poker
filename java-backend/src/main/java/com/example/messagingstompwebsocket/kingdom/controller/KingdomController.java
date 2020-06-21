@@ -5,6 +5,7 @@ import java.util.List;
 import com.example.messagingstompwebsocket.kingdom.model.EventCard;
 import com.example.messagingstompwebsocket.kingdom.model.Kingdom;
 import com.example.messagingstompwebsocket.kingdom.model.Townsman;
+import com.example.messagingstompwebsocket.kingdom.service.DeckService;
 import com.example.messagingstompwebsocket.kingdom.service.KingdomService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ public class KingdomController {
 
   @Autowired
   KingdomService kingdomService;
+
+  @Autowired
+  DeckService deckService;
 
   @GetMapping("/kingdom")
   public Kingdom getKingdom(@RequestParam String kingdomName) {
@@ -35,7 +39,15 @@ public class KingdomController {
     return kingdomService.joinKingdom(kingdomName, townsman);
   }
 
-  @GetMapping("/kingdom/event")
+  @GetMapping("/kingdom/events/create")
+  public EventCard createEventCards(@RequestParam String kingdomName) {
+    Kingdom kingdom = kingdomService.getKingdom(kingdomName);
+    List<EventCard> kingdomEvents = kingdom.getKingdomEvents();
+    deckService.addCards(kingdomEvents, EventCard.class, 5);
+    return new EventCard();
+  }
+
+  @GetMapping("/kingdom/events")
   public EventCard drawEventCard(@RequestParam String kingdomName) {
     Kingdom kingdom = kingdomService.getKingdom(kingdomName);
     List<EventCard> kingdomEvents = kingdom.getKingdomEvents();
