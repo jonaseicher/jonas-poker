@@ -21,7 +21,7 @@ public class DeckService {
   /**
    * Randomly shuffles the draw pile.
    */
-  public void shuffle(Deck deck) {
+  public void shuffle(Deck<Card> deck) {
     for (int i = 0; i < deck.getDraw().size() - 1; i++) {
       // Swap index i with a random card index>=i.
       int swapIndex = i + (int) (Math.random() * (deck.getDraw().size() - i));
@@ -36,7 +36,7 @@ public class DeckService {
    *
    * @return the card that was drawn or null if the deck.getDraw is empty.
    */
-  public Card drawCard(Deck deck) {
+  public Card drawCard(Deck<Card> deck) {
     if (deck.getDraw().size() == 0) {
       return null;
     }
