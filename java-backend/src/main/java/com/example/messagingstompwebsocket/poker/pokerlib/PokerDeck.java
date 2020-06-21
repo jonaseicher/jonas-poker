@@ -3,15 +3,15 @@ package com.example.messagingstompwebsocket.poker.pokerlib;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Deck {
+public class PokerDeck {
   private List<PlayingCard> deck;
 
-  private static final String LOG_TAG = Deck.class.getSimpleName();
+  private static final String LOG_TAG = PokerDeck.class.getSimpleName();
 
   /**
    * Constructs a new deck with the cards in order.
    */
-  public Deck() {
+  public PokerDeck() {
     deck = new ArrayList<PlayingCard>();
     for (int i = 0; i < 52; i++) {
       deck.add(PlayingCard.fromIndex(i));
@@ -51,36 +51,5 @@ public class Deck {
       return null;
     }
     return deck.remove(0);
-  }
-
-  /**
-   * Serializes this Deck into a string.
-   * @return a string representing this Deck.
-   */
-  public String serialize() {
-    String s = "";
-    for (int i = 0; i < deck.size(); i++) {
-      s += deck.get(i).toIndex();
-      if (i < deck.size() - 1) {
-        s += ".";
-      }
-    }
-    return s;
-  }
-
-  /**
-   * Deserializes a string to create a new Deck.
-   * @param s The string to deserialize.
-   * @return a new Deck.
-   */
-  public static Deck deserialize(String s) {
-    Deck deck = new Deck();
-    String indexStrings[] = s.split("\\.");
-    int indexes[] = new int[indexStrings.length];
-    for (int i = 0; i < indexStrings.length; i++) {
-      indexes[i] = Integer.parseInt(indexStrings[i]);
-    }
-    deck.stack(indexes);
-    return deck;
   }
 }

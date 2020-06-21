@@ -6,8 +6,9 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class Kingdom {
-  String name;
-  List<Townsman> townsmen = new ArrayList<>();
-  List<EventCard> kingdomEvents = new ArrayList<>();
+public class Deck {
+
+  List<Card> draw = new ArrayList<>();
+  List<Card> discard = new ArrayList<>();
+
 }

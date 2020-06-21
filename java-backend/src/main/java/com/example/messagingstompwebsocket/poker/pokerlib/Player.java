@@ -94,7 +94,7 @@ public class Player implements Comparable {
    * Draws 2 pocket cards.
    * @param deck The deck to draw cards from. Must have at least 2 cards.
    */
-  public void drawCards(Deck deck) {
+  public void drawCards(PokerDeck deck) {
     pocketCards.add(deck.drawCard());
     pocketCards.add(deck.drawCard());
   }

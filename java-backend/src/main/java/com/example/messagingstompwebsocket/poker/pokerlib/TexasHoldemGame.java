@@ -22,7 +22,7 @@ public class TexasHoldemGame {
   private String tableName;
   // The deck of cards to draw cards from.
   @JsonIgnore
-  private Deck deck;
+  private PokerDeck deck;
   // The players in the game (myself is index 0).
   private List<Player> players;
   // The cards on the board.
@@ -283,7 +283,7 @@ public class TexasHoldemGame {
     newHandPlayers.clear();
 
     // Shuffle the deck.
-    deck = new Deck();
+    deck = new PokerDeck();
     deck.shuffle();
 
     // Rotate the button. May be null for first hand.
