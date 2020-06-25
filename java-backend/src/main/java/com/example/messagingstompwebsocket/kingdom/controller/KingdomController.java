@@ -2,6 +2,7 @@ package com.example.messagingstompwebsocket.kingdom.controller;
 
 import java.util.List;
 
+import com.example.messagingstompwebsocket.kingdom.model.Card;
 import com.example.messagingstompwebsocket.kingdom.model.Deck;
 import com.example.messagingstompwebsocket.kingdom.model.EventCard;
 import com.example.messagingstompwebsocket.kingdom.model.Kingdom;
@@ -41,19 +42,18 @@ public class KingdomController {
   }
 
   @GetMapping("/kingdom/events/create")
-  public EventCard createEventCards(@RequestParam String kingdomName) {
+  public Deck createEventCards(@RequestParam String kingdomName) {
     Kingdom kingdom = kingdomService.getKingdom(kingdomName);
-    List<EventCard> kingdomEvents = kingdom.getKingdomEvents();
+    Deck kingdomEvents = kingdom.getKingdomEvents();
     deckService.addCards(kingdomEvents, EventCard.class, 5);
-    return new EventCard();
+    return kingdomEvents;
   }
 
-  @GetMapping("/kingdom/events")
+  @GetMapping("/kingdom/events/draw")
   public EventCard drawEventCard(@RequestParam String kingdomName) {
     Kingdom kingdom = kingdomService.getKingdom(kingdomName);
     Deck kingdomEvents = kingdom.getKingdomEvents();
-    //return deckService.draw(kingdomEvents)
-    return new EventCard();
+    return (EventCard)deckService.drawCard(kingdomEvents);
   }
 
 

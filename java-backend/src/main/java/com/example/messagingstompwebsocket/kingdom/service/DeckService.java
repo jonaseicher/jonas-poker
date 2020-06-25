@@ -11,7 +11,9 @@ public class DeckService {
    public void addCards(Deck deck, Class<? extends Card> clazz, int amount) {
     try {
       for (int i = 0; i < amount; i++) {
-        deck.getDraw().add(clazz.newInstance());
+        Card card = clazz.newInstance();
+        card.setName("Event-" + String.valueOf(Math.floor(100 * Math.random())));
+        deck.getDraw().add(card);
       }
     } catch (IllegalAccessException | InstantiationException e) {
       e.printStackTrace();
@@ -21,7 +23,7 @@ public class DeckService {
   /**
    * Randomly shuffles the draw pile.
    */
-  public void shuffle(Deck<Card> deck) {
+  public void shuffle(Deck deck) {
     for (int i = 0; i < deck.getDraw().size() - 1; i++) {
       // Swap index i with a random card index>=i.
       int swapIndex = i + (int) (Math.random() * (deck.getDraw().size() - i));
@@ -36,11 +38,13 @@ public class DeckService {
    *
    * @return the card that was drawn or null if the deck.getDraw is empty.
    */
-  public Card drawCard(Deck<Card> deck) {
+  public Card drawCard(Deck deck) {
     if (deck.getDraw().size() == 0) {
       return null;
     }
-    return deck.getDraw().remove(0);
+    Card card = deck.getDraw().remove(0);
+    deck.getDiscard().add(card);
+    return card;
   }
 
 }

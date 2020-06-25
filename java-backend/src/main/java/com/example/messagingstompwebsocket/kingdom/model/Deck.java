@@ -6,9 +6,9 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class Deck<T extends Card> {
+public class Deck {
 
-  List<T> draw = new ArrayList<>();
-  List<T> discard = new ArrayList<>();
+  List<Card> draw = new ArrayList<>();
+  List<Card> discard = new ArrayList<>();
 
 }
