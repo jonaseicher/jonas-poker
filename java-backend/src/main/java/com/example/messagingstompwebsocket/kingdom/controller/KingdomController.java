@@ -55,16 +55,19 @@ public class KingdomController {
     Deck kingdomEvents = kingdom.getKingdomEvents();
     return (EventCard)deckService.drawCard(kingdomEvents);
   }
-  
-/*   @GetMapping("/kingdom/events/decide")
-  public EventCard decideEventCard(@RequestParam String kingdomName, int eventID, String PlayerName, String decision) {
-    Kingdom kingdom = kingdomService.getKingdom(kingdomName);
+
+  @GetMapping("/kingdom/events/decide")
+  public EventCard decideEventCard(@RequestParam String kingdomName, int eventId, String playerName, String decision) {
+    // Kingdom kingdom = kingdomService.getKingdom(kingdomName);
+    // EventCard event = kingdomService.getEvent(kingdom, eventId);
+    EventCard event = kingdomService.decide(kingdomName, eventId, decision);
+    return event;
   }
-  
+
   @GetMapping("/kingdom/events/evaluate")
   public void evaluateEventCard(@RequestParam String kingdomName, int eventID) {
     Kingdom kingdom = kingdomService.getKingdom(kingdomName);
-  } */
+  }
 
 
 

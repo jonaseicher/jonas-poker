@@ -54,4 +54,10 @@ public class KingdomService {
     // TODO
   }
 
+public EventCard decide(String kingdomName, int eventId, String decision) {
+  return null;
+
+  // TODO
+}
+
 }
