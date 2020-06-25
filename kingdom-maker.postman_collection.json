@@ -1,0 +1,227 @@
+{
+	"variables": [],
+	"info": {
+		"name": "kingdom maker",
+		"_postman_id": "8937c114-414f-1d6b-1f59-bb1dfa35b181",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "kingdomList",
+			"request": {
+				"url": "http://localhost:9090/kingdomList",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "kingdom Beacharena",
+			"request": {
+				"url": {
+					"raw": "http://localhost:9090/kingdom?kingdomName=Beacharena",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"kingdom"
+					],
+					"query": [
+						{
+							"key": "kingdomName",
+							"value": "Beacharena",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "join beacharena",
+			"request": {
+				"url": {
+					"raw": "http://localhost:9090/kingdom/join?kingdomName=Beacharena&playerName=Enno",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"kingdom",
+						"join"
+					],
+					"query": [
+						{
+							"key": "kingdomName",
+							"value": "Beacharena",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "playerName",
+							"value": "Enno",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "create events",
+			"request": {
+				"url": {
+					"raw": "http://localhost:9090/kingdom/events/create?kingdomName=Beacharena",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"kingdom",
+						"events",
+						"create"
+					],
+					"query": [
+						{
+							"key": "kingdomName",
+							"value": "Beacharena",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get all events",
+			"request": {
+				"url": {
+					"raw": "http://localhost:9090/kingdom/events?kingdomName=Beacharena",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"kingdom",
+						"events"
+					],
+					"query": [
+						{
+							"key": "kingdomName",
+							"value": "Beacharena",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "draw event",
+			"request": {
+				"url": {
+					"raw": "http://localhost:9090/kingdom/events/draw?kingdomName=Beacharena",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"kingdom",
+						"events",
+						"draw"
+					],
+					"query": [
+						{
+							"key": "kingdomName",
+							"value": "Beacharena",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "decide on event",
+			"request": {
+				"url": {
+					"raw": "http://localhost:9090/kingdom/decide?kingdomName=Beacharena&playerName=Jerick&decision=overhead jump-set with a flip",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"kingdom",
+						"decide"
+					],
+					"query": [
+						{
+							"key": "kingdomName",
+							"value": "Beacharena",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "playerName",
+							"value": "Jerick",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "decision",
+							"value": "overhead jump-set with a flip",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
