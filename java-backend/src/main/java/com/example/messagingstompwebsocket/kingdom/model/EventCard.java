@@ -1,5 +1,7 @@
 package com.example.messagingstompwebsocket.kingdom.model;
 
+import java.util.Map;
+
 import lombok.Data;
 
 @Data
