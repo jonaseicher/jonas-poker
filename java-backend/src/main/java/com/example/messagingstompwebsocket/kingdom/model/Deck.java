@@ -10,5 +10,5 @@ public class Deck {
 
   List<Card> draw = new ArrayList<>();
   List<Card> discard = new ArrayList<>();
-
+  Card currentCard;
 }

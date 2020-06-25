@@ -5,7 +5,11 @@ import com.example.messagingstompwebsocket.kingdom.model.Deck;
 
 import org.springframework.stereotype.Service;
 
+import lombok.extern.java.Log;
+
+
 @Service
+@Log
 public class DeckService {
 
    public void addCards(Deck deck, Class<? extends Card> clazz, int amount) {
@@ -43,7 +47,19 @@ public class DeckService {
       return null;
     }
     Card card = deck.getDraw().remove(0);
+    if (deck.getCurrentCard() != null) {
+      log.fine("Discarding current card " + deck.getCurrentCard());
+      discardCurrentCard(deck);
+    }
+    deck.setCurrentCard(card);
+    return card;
+  }
+
+  public Card discardCurrentCard(Deck deck) {
+    Card card = deck.getCurrentCard();
+    if (card == null) return null;
     deck.getDiscard().add(card);
+    deck.setCurrentCard(null);
     return card;
   }
 
