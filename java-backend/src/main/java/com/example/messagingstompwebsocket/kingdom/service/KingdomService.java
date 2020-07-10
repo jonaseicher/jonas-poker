@@ -46,18 +46,12 @@ public class KingdomService {
     return kingdom;
   }
 
-
-
-  public Kingdom triggerKingdomEvent(String kingdomName, String event) {
+  public EventCard decideOnCurrentEvent(String kingdomName, String playerName, String decision) {
     Kingdom kingdom = getKingdom(kingdomName);
-    return kingdom;
-    // TODO
+    EventCard event = (EventCard)kingdom.getKingdomEvents().getCurrentCard();
+    if (event == null) throw new IllegalStateException("No current event card drawn. Draw an event card first.");
+    event.getPlayer2decision().put(playerName, decision);
+    return event;
   }
-
-public EventCard decide(String kingdomName, int eventId, String decision) {
-  return null;
-
-  // TODO
-}
 
 }
