@@ -1,12 +1,12 @@
 package com.example.messagingstompwebsocket.kingdom.model;
 
-import org.springframework.data.annotation.Id;
+// import org.springframework.data.annotation.Id;
 
 import lombok.Data;
 
 @Data
 public class Townsman {
-  @Id
+  // @Id
   String name;
   int wealth;
 }

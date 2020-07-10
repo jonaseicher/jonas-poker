@@ -7,12 +7,12 @@
 		<artifactId>jonas-poker</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	
+
 	<artifactId>frontend</artifactId>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>	
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<frontend-maven-plugin.version>1.9.1</frontend-maven-plugin.version>
 	</properties>
 
@@ -30,7 +30,7 @@
 							<goal>install-node-and-npm</goal>
 						</goals>
 						<configuration>
-							<nodeVersion>v12.16.0</nodeVersion>
+							<nodeVersion>v12.18.2</nodeVersion>
 						</configuration>
 					</execution>
 					<!-- Install all project dependencies -->
